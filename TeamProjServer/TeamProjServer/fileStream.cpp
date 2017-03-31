@@ -1,7 +1,8 @@
 #include <iostream>
-#include <fileStream>
+#include "fileStream.h"
+using namespace std;
 
-int functionA(int arg){
+int fileStream::functionA(int arg){
 	cout<<"This is server filestream. arg:"<<arg<<endl;
 	return 0;
 }
