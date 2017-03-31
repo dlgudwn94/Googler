@@ -1,5 +1,6 @@
-#include <iostram>
-using namespace std;
+#pragma once
+#ifndef __FILESTREAM
+#define __FILESTREAM
 
 class fileStream{
 	public:
@@ -11,7 +12,4 @@ class fileStream{
 	
 };
 
-int functionA(int arg){
-	cout<<"This is server filestream. arg:"<<arg<<endl;
-	return 0;
-}
+#endif // !__FILESTREAM
