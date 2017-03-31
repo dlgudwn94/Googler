@@ -1,8 +1,8 @@
-#include<stdio.h>
-#include<iostram>
+#include <iostream>
+#include "Client_File.h"
 
 int main() {
-	printf("Client Server");
+
 
 	return 0;
 }
