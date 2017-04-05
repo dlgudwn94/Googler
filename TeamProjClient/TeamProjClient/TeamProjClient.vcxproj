@@ -152,6 +152,9 @@
   <ItemGroup>
     <ClInclude Include="Client_File.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\iostream" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

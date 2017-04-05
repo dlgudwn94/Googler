@@ -1,11 +1,15 @@
-#include <iosteam>
+#include <iostream>
+#include <stdlib.h>
 #include "Client_File.h"
 
-int main(void) {
+using namespace std;
 
-	iostream::cout<<"Network client"<< endl;
+int main(void)
+{
+	cout<<"Network client"<< endl;
 	Client_File ins = Client_File();
 	ins.print();
 
+	system("pause");
 	return 0;
 }
