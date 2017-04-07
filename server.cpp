@@ -39,6 +39,8 @@ void Server::ConnectUDP() {
 	// connection roof
 	while (1)
 	{
+		//FileManage클래스 인스턴스 하나 만들어서 처음 들어오는 버퍼는 .SetFileName으로 파일 이름을 받은 후에
+		//.WriteFile로 파일 내용을 받아주면 됨. 종료 인자가 들어오면 1이 리턴됨.
 		mClient_addr_size = sizeof(mClient_addr);
 		recvfrom(mServerSocket, mRecvBuffer, BUFFERSIZE + 1, 0,
 			(struct sockaddr*)&mClient_addr, &mClient_addr_size);
