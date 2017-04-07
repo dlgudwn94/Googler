@@ -6,12 +6,8 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #pragma comment (lib, "Ws2_32.lib")
 
-#include <iostream>
 #include <WinSock2.h>
-
-#define BUFFERSIZE (512)
-
-using namespace std;
+#include "filemanage.h"
 
 class Server {
 private:
