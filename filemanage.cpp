@@ -1,7 +1,9 @@
 #include "filemanage.h"
 
-FileManage::FileManage(char *name) {
+FileManage::FileManage(char *name, char* buffer, int BUFF_SIZE) {
 	SetFileName(name);
+	this->mRecvBuffer = buffer;
+	this->mBuf_size = BUFF_SIZE;
 }
 
 FileManage::~FileManage() {
@@ -15,9 +17,9 @@ int FileManage::SetFileName(char *name) {
 	}
 }
 
-int FileManage::WriteFile(char *buffer) {
+int FileManage::WriteFile() {
 	if (!File)return 2;//파일open안됨
-	if (strcmp(buffer, STRING_COMPARE) == 0)return 1; //종료문자열
-	File.write(buffer, BUFFERSIZE);
+	if (strcmp(mRecvBuffer, STRING_COMPARE) == 0)return 1; //종료문자열
+	File.write(mRecvBuffer, mBuf_size);
 	return 0;
 }

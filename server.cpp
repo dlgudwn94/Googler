@@ -1,7 +1,9 @@
 #include "server.h"
 
-Server::Server(int port) {
+Server::Server(char* buffer, int BUFF_SIZE, int port) {
 	this->mPort = port;
+	this->mRecvBuffer = buffer;
+	this->mBuf_size = BUFF_SIZE;
 
 	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != NO_ERROR)
 	{
@@ -36,6 +38,7 @@ void Server::ConnectUDP() {
 		exit(14);
 	}
 
+	/*
 	// connection roof
 	while (1)
 	{
@@ -50,4 +53,11 @@ void Server::ConnectUDP() {
 		sendto(mServerSocket, mNoticeMes.c_str(), strlen(mNoticeMes.c_str()) + 1, 0,
 			(struct sockaddr*)&mClient_addr, sizeof(mClient_addr));
 	}
+	*/
+}
+
+int Server::RecvToClient() {
+	mClient_addr_size = sizeof(mClient_addr);
+	return recvfrom(mServerSocket, mRecvBuffer, mBuf_size, 0,
+			(struct sockaddr*)&mClient_addr, &mClient_addr_size);
 }

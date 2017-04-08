@@ -1,8 +1,14 @@
-#include "server.h"
+#include "ServerManager.h"
 
 int main(void) {
-	Server sevIns(8888);
+	ServerManager* InsSM;
+	char* fileName;
 
-	sevIns.ConnectUDP();
+	cout << "저장될 파일 이름 :";
+	cin >> fileName;
+	InsSM = new ServerManager(fileName);
+	InsSM->FileRecvStart();
+
+	return 0;
 
 }

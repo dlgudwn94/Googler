@@ -7,13 +7,16 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 #include <WinSock2.h>
-#include "filemanage.h"
+#include <iostream>
+
+using namespace std;
 
 class Server {
 private:
 	//DATA stream side
-	char mSendBuffer[BUFFERSIZE + 1];
-	char mRecvBuffer[BUFFERSIZE + 1];
+	//char mSendBuffer[BUFFERSIZE + 1];
+	char* mRecvBuffer;
+	int mBuf_size;
 
 
 	
@@ -30,10 +33,10 @@ private:
 	int mClient_addr_size;
 
 public:
-	Server(int port);
+	Server(char* buffer, int BUFF_SIZE, int port);
 	~Server();
 	void ConnectUDP();
-
+	int RecvToClient();
 };
 
 
