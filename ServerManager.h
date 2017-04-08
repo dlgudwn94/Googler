@@ -16,7 +16,7 @@ private:
 
 
 public:
-	ServerManager(char* createFileName);
+	ServerManager();
 	~ServerManager();
 
 	void FileRecvStart();
