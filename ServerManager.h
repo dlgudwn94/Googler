@@ -10,6 +10,7 @@
 
 class ServerManager {
 private:
+	int RecvFlg;
 	Server* mServerIns;
 	FileManage* mFileIns;
 	char mRecvBuffer[BUFF_SIZE];
