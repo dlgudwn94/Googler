@@ -17,6 +17,7 @@ void ServerManager::FileRecvStart() {
 	
 	while (1) {
 		if (RecvFlg == 0) {
+			cout << "Waitting for Recive\n";
 			if (mServerIns->RecvToClient() == -1) {//처음 패킷은 파일의 이름을 받아옴
 				cout << "ERRER: Packet Recv Fail" << endl;
 				exit(1);
