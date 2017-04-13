@@ -1,10 +1,8 @@
 #include "ClientManager.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-	char* fileName;
-
-	ClientManager* cma = new ClientManager();
+	ClientManager* cma = new ClientManager(argv[1],argv[2]);
 
 	return 0;
 }

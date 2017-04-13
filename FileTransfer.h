@@ -17,10 +17,9 @@ private:
 	FILE* fp;
 	struct sockaddr_in echoServAddr;
 	unsigned short echoServPort;
-	
-	char servIP[11];
 
-	char fileName[BUFF_SIZE];
+	char *fileName;
+	char *servIP;
 	char buf[BUFF_SIZE];
 	char fileSizeBuf[BUFF_SIZE];
 	char readBuffer[BUFF_SIZE];
@@ -34,12 +33,14 @@ private:
 	WSADATA wasData;
 
 public:
-	FileTransfer();
+	FileTransfer(char *fileName, char *servIP);
 	~FileTransfer();
 
 	void IsStartup();
 	void IsSocket();
 	void ClientStart();
 	void StartTransfer();
+	int setFileName(char *fileName);
+	int setServIP(char *servIP);
 };
 #endif

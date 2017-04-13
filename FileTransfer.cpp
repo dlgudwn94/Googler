@@ -1,20 +1,24 @@
 #include "FileTransfer.h"
 
-FileTransfer::FileTransfer()
+FileTransfer::FileTransfer(char *fileName, char *servIP)
 {
-	strcpy_s(fileName, "test.txt");
+	
 	memset(buf, '\0', sizeof(buf));
 	memset(fileSizeBuf, '\0', sizeof(fileSizeBuf));
 	memset(readBuffer, '\0', sizeof(readBuffer));
+
+	this->fileName = fileName;
+	this->servIP = servIP;
+	
+	cout << "file name: "<<fileName << endl;
+	cout << "servIP: " << servIP << endl;
 
 	this->fileSize = 0;
 	this->fileNameLen = 0;
 	this->readn = 0;
 	this->sendton = 0;
 	this->recvMsgSize = 0;
-	strcpy_s(servIP, "127.0.0.1");
-	strcpy_s(fileName, "test.txt");
-	this->fileNameLen = strlen(fileName) + 1;
+	this->fileNameLen = strlen(this->fileName) + 1;
 	this->echoServPort = atoi("8888");
 }
 
@@ -24,6 +28,20 @@ FileTransfer::~FileTransfer()
 	fclose(fp);
 	WSACleanup();
 	exit(0);
+}
+
+int FileTransfer::setFileName(char *fileName)
+{
+	this->fileName = fileName;
+
+	return 0;
+}
+
+int  FileTransfer::setServIP(char *servIP)
+{
+	this->servIP = servIP;
+
+	return 0;
 }
 
 void FileTransfer::IsStartup()
@@ -66,8 +84,6 @@ void FileTransfer::ClientStart()
 		WSACleanup();
 		exit(1);
 	}
-
-	
 
 	fseek(fp, 0, SEEK_END);
 	this->fileSize = ftell(fp);
