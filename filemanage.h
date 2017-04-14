@@ -7,12 +7,12 @@
 #include <fstream>
 #include <string>
 
-#define STRING_COMPARE "FFFFFFFF"
+#define BUFF_SIZE (1024)
+#define STRUCT_SIZE (BUFF_SIZE-4)
 
-#define BUFFER_SIZE (1020)
 struct packet {
 	int meta;
-	char buff[BUFFER_SIZE];
+	char buff[STRUCT_SIZE];
 };
 
 using namespace std;

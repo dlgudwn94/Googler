@@ -39,20 +39,14 @@ int FileManage::SetFileNameFromBuf() {
 }
 
 int FileManage::WriteFile() {
-
 	if (!FileOpenFlag)return 2;//파일open안됨
-	if (strcmp(pk->buff, STRING_COMPARE) == 0) {
-		File.close(); //파일을 닫음
-		cout << "Complite!"<<endl;
-		return 1; //종료문자열
-	}
-	File.write(pk->buff, BUFFER_SIZE);
+	File.write(pk->buff, STRUCT_SIZE);
 	return 0;
 }
 
 int FileManage::FileEnd() {
 	if (!FileOpenFlag)return 2;//파일open안됨
-	if (pk->meta < 0 || pk->meta > BUFFER_SIZE)return 3;//잘못된 인자
+	if (pk->meta < 0 || pk->meta > STRUCT_SIZE)return 3;//잘못된 인자
 	File.write(pk->buff,pk->meta);
 	FileOpenFlag = 0;
 	return 0;
