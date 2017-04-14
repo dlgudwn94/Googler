@@ -63,16 +63,15 @@ int FileManage::RecvPacket() {
 	switch (pk->meta)
 	{
 	case -2://이름
-		SetFileName(pk->buff);
+		return SetFileName(pk->buff);
 		break;
 	case -1://내용
-		WriteFile();
+		return WriteFile();
 		break;
 	default://0~buffsize 내용끝
-		FileEnd();
+		return FileEnd();
 		break;
 	}
-
 }
 
 int FileManage::IsOpen() {
