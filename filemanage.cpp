@@ -51,7 +51,7 @@ int FileManage::FileEnd() {
 	File.write(pk->buff,pk->meta);
 	File.close();
 	FileOpenFlag = 1;
-	cout << "comlite!" << endl;
+	//cout << "comlite!" << endl;
 	return 0;
 }
 
@@ -76,5 +76,6 @@ int FileManage::RecvPacket() {
 }
 
 int FileManage::IsOpen() {
+	cout << pk->meta;
 	return FileOpenFlag;
 }

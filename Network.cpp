@@ -46,7 +46,6 @@ int Network::RecvToClient() {
 	error = recvfrom(mServerSocket, mRecvBuffer, mBuffSize, 0,
 		(struct sockaddr*)&mClient_addr, &mClientAddrSize);
 
-	cout << "Recv : " << mRecvBuffer << endl;
 
 	if (error == -1)
 		cout << "ERROR: recvfrom Fail" << endl;

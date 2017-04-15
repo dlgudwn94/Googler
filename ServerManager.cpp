@@ -13,6 +13,7 @@ ServerManager::~ServerManager() {
 }
 
 void ServerManager::FileRecvStart() {
+	int count = 0;
 	
 	while (true) {
 			cout << "Waitting for Recive\n";
@@ -20,9 +21,13 @@ void ServerManager::FileRecvStart() {
 				cout << "ERRER: Packet Recv Fail" << endl;
 				exit(1);
 			}
+
 			if (mFileIns->RecvPacket()) {
 				cout << "ERRER: Can't Create File" << endl;
 				exit(1);
 			}
+			cout << "Recv Packet num : " << count << endl;
+			cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
+			count++;
 	}
 }
