@@ -1,5 +1,4 @@
 #include "ServerManager.h"
-#include <stdlib.h>
 
 int main(void) {
 	ServerManager* InsSM;
@@ -7,9 +6,6 @@ int main(void) {
 	InsSM = new ServerManager();
 	InsSM->FileRecvStart();
 
-	delete(InsSM);
-
-	system("PAUSE");
 	return 0;
 
 }

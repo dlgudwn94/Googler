@@ -13,7 +13,6 @@ private:
 	FileManage* mFileIns;
 	char mRecvBuffer[BUFF_SIZE];
 
-	int mPacketCount = 0;
 
 public:
 	ServerManager();
