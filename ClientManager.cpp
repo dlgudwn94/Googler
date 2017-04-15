@@ -1,25 +1,48 @@
 #include "ClientManager.h"
 
-ClientManager::ClientManager(char *fileName, char *servIP) 
+ClientManager::ClientManager()
 {
-	this->mFileIns = new FileTransfer(fileName,servIP);
+	string Ip;
+	string filename;
+	
+	cout << "Input Dst Ip: ";
+	getline(cin, Ip);
+	cout << "Input open file address: ";
+	getline(cin, filename);
 
-	mFileIns->IsStartup();
-	mFileIns->IsSocket();
-	mFileIns->ClientStart();
-	mFileIns->StartTransfer();
+	this->mNetworkIns = new Network(mSendBuffer, 8888, Ip);
+	this->mFileIns = new FileTransfer(filename, mSendBuffer);
+
+	mNetworkIns->ConnectUDP();
+
+	if (mFileIns->FileStreamOpen() == -1)
+		exit(1);
+
+	// send filename
+	if (mNetworkIns->SendToDst() == -1)
+		exit(1);
 }
 
-int ClientManager::setFileName(char *fileName)
+ClientManager::~ClientManager()
 {
-	this->fileName = fileName;
-	cout << this->fileName << endl;
-	return 0;
+	delete(mNetworkIns);
+	delete(mFileIns);
 }
 
-int ClientManager::setServIP(char *servIP)
+void ClientManager::FileSendStart()
 {
-	this->servIP = servIP;
-	cout << this->servIP << endl;
-	return 0;
+	while (true)
+	{
+		if (mFileIns->ReadyToPacket() == 0)
+		{
+			if (mNetworkIns->SendToDst() == -1)
+				exit(1);
+
+			cout << "전송완료" << endl;
+			break;
+		}
+		
+		if (mNetworkIns->SendToDst() == -1)
+			exit(1);
+	}
 }

@@ -1,23 +1,22 @@
 #ifndef __CLIENTMANAGER
 #define __CLIENTMANAGER
 
-#include "fileTransfer.h"
-
-#define BUFF_SIZE (1024)
+#include "Network.h"
+#include "FileTransfer.h"
 
 class ClientManager
 {
 private:
+	Network* mNetworkIns;
 	FileTransfer* mFileIns;
-	char *fileName;
-	char *servIP;
+	
+	char mSendBuffer[BUFF_SIZE];
 
 public:
-	ClientManager(char *fileName, char *servIP);
+	ClientManager();
 	~ClientManager();
-	
-	int setFileName(char *fileName);
-	int setServIP(char *servIP);
+
+	void FileSendStart();
 };
 
-#endif
+#endif // !__CLIENTMANAGER

@@ -1,8 +1,12 @@
 #include "ClientManager.h"
 
-int main(int argc, char *argv[])
+int main(void)
 {
-	ClientManager* cma = new ClientManager(argv[1],argv[2]);
+	ClientManager* CMIns;
 
+	CMIns = new ClientManager();
+	CMIns->FileSendStart();
+
+	delete(CMIns);
 	return 0;
 }
