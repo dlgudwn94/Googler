@@ -1,28 +1,38 @@
 #include "ServerManager.h"
 
 ServerManager::ServerManager() {
-	this->mServerIns = new Server(mRecvBuffer, BUFF_SIZE, 8888);
-	this->mFileIns = new FileManage(mRecvBuffer, BUFF_SIZE);
-	mServerIns->ConnectUDP();
+	this->mNetworkIns = new Network(mRecvBuffer, BUFF_SIZE, 8888);
+	this->mFileIns = new FileManage(mRecvBuffer);
+	
+	mNetworkIns->ConnectUDP();
+
+	//recv Filename
+	if (mNetworkIns->RecvToClient() == -1)
+		exit(1);
+
+	
+	int error = mFileIns->FileStreamOpen();
+	if (error == -2 || error == -1)
+		exit(1);
 
 }
 
 ServerManager::~ServerManager() {
-	mServerIns->~Server();
-	mFileIns->~FileManage();
+	delete(mNetworkIns);
+	delete(mFileIns);
 }
 
 void ServerManager::FileRecvStart() {
 	
-	while (1) {
-			cout << "Waitting for Recive\n";
-			if (mServerIns->RecvToClient() == -1) {
-				cout << "ERRER: Packet Recv Fail" << endl;
-				exit(1);
-			}
-			if (mFileIns->RecvPacket()) {
-				cout << "ERRER: Can't Create File" << endl;
-				exit(1);
-			}
+	while (true) {
+		if (mNetworkIns->RecvToClient() == -1)
+			exit(1);
+
+		cout << "Packet Count : " << mPacketCount << endl;
+		mPacketCount++;
+		if (mFileIns->UnpackPacket() == 0) {
+			cout << "전송완료" << endl;
+			break;
+		}
 	}
 }
