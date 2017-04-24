@@ -49,9 +49,31 @@ int FileManage::FileEnd() {
 	if (FileOpenFlag)return 2;//파일open안됨
 	if (pk->meta < 0 || pk->meta > STRUCT_SIZE)return 3;//잘못된 인자
 	File.write(pk->buff,pk->meta);
+	//cout << "comlite!" << endl;
+	return 0;
+}
+
+int FileManage::FileClose() {
 	File.close();
 	FileOpenFlag = 1;
-	//cout << "comlite!" << endl;
+	return 0;
+}
+
+int FileManage::GetMd5() {
+	FileClose();
+	receive_md5 = pk->buff;
+	MakeMd5();
+	cout << "receive md5:" << receive_md5 << endl;
+	cout << "make md5:" << make_md5 << endl;
+	if (receive_md5.compare( make_md5) == 0) {
+
+	}
+	return 0;
+}
+
+int FileManage::MakeMd5() {
+	md5wrapper md5;
+	make_md5 = md5.getHashFromFile(FileName);
 	return 0;
 }
 
@@ -63,6 +85,9 @@ int FileManage::RecvPacket() {
 
 	switch (pk->meta)
 	{
+	case -3://md5값
+		return GetMd5();
+		break;
 	case -2://이름
 		return SetFileName(pk->buff);
 		break;

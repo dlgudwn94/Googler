@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include "md5wrapper.h"
 #define BUFF_SIZE (1024)
 #define STRUCT_SIZE (BUFF_SIZE - 4)
 
@@ -21,6 +21,8 @@ class FileManage {
 private:
 	char* mRecvBuffer;
 	string FileName;
+	string make_md5;
+	string receive_md5;
 	fstream File;
 	char FileOpenFlag;
 	packet *pk;
@@ -28,7 +30,9 @@ private:
 	int SetFileNameFromBuf(); //버퍼에서 직접 가져옴
 	int WriteFile(); //종료인자를 읽었다면 종료인자 리턴(0:계속, 1:종료, 2:파일open안됨)
 	int FileEnd();
-
+	int FileClose();
+	int GetMd5();
+	int MakeMd5();
 public:
 	FileManage(char* buffer);
 	~FileManage();
