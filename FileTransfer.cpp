@@ -1,4 +1,5 @@
 #include "FileTransfer.h"
+#include "md5wrapper.h"
 
 FileTransfer::FileTransfer(string filename, char* sendBuffer)
 {
@@ -50,19 +51,20 @@ int FileTransfer::ReadyToPacket()
 		else
 		{
 			cout << "Last packet" << endl;
-			isTransferComplete = true;
+			//isTransferComplete = true;
 
-			return 0;
+			return 1;
 		}
 
 	}
 	
-	else // 마지막이 딱 DATA사이즈 엿을 경우
+	else // 마지막이 딱 DATA 사이즈였을 경우
 	{
 		cout << "EOF" << endl;
-		//공 패킷을 보냄
-		mPacket->metaData = 0;
-		strcpy(mPacket->dataBuffer, "Last Packet");
+		//md5 해쉬 보냄
+		getMd5();
+		mPacket->metaData = -3;
+		strcpy_s(mPacket->dataBuffer, md5_hash.size() + 1, md5_hash.c_str());
 
 		isTransferComplete = true;
 
@@ -73,4 +75,10 @@ int FileTransfer::ReadyToPacket()
 bool FileTransfer::isComplete()
 {
 	return isTransferComplete;
+}
+
+void  FileTransfer::getMd5()
+{
+	md5wrapper md5;
+	md5_hash = md5.getHashFromFile(this->mFileName);
 }

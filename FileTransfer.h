@@ -26,6 +26,7 @@ private:
 	ifstream mFileIfstream;
 	Packet *mPacket;
 	
+	string md5_hash;
 	bool isTransferComplete;
 
 public:
@@ -34,6 +35,7 @@ public:
 
 	int FileStreamOpen();
 	int ReadyToPacket();
+	void getMd5();
 	bool isComplete();
 };
 
