@@ -1,7 +1,8 @@
 #ifndef __FILETRANSFER
-#define __FILETRANSFER
+#define __FILETRANSRFER
 
 #define _CRT_SECURE_NO_WARNINGS
+#define _SCL_SECURE_NO_WARNINGS
 
 #include <fstream>
 #include <iostream>
@@ -25,17 +26,20 @@ private:
 	string mFileName;
 	ifstream mFileIfstream;
 	Packet *mPacket;
-	
 	string md5_hash;
+
 	bool isTransferComplete;
 
 public:
 	FileTransfer(string fileName, char* sendBuffer);
 	~FileTransfer();
 
+	char *srcFileName;
+	char *tmp;
 	int FileStreamOpen();
 	int ReadyToPacket();
 	void getMd5();
+	void makeZip();
 	bool isComplete();
 };
 
