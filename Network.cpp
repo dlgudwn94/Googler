@@ -91,6 +91,8 @@ int Network::SendToDstTCP()
 {
 	int error;
 
+	cout << "Transmission data " << mSendBuffer << endl;
+
 	error = send(mClientSocket, mSendBuffer, mBufferSize, 0);
 
 	if (error == -1)

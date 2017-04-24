@@ -4,6 +4,9 @@
 #include "Network.h"
 #include "FileTransfer.h"
 
+#define UDP 0
+#define TCP 1
+
 class ClientManager
 {
 private:
@@ -12,8 +15,13 @@ private:
 	
 	char mSendBuffer[BUFF_SIZE];
 
+	void FileSendStartTCP();
+	void FileSendStartUDP();
+
+	int mProtocal;
+
 public:
-	ClientManager();
+	ClientManager(int protocal, int port);
 	~ClientManager();
 
 	void FileSendStart();
