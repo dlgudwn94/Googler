@@ -1,11 +1,25 @@
 #include "ServerManager.h"
+#include <thread>
+
+void RecvStart(ServerManager* a) {
+	a->FileRecvStart();
+}
 
 int main(void) {
-	ServerManager* InsSM;
+	ServerManager* InsSMUDP;
+	ServerManager* InsSMTCP;
 
-	InsSM = new ServerManager();
-	InsSM->FileRecvStart();
 
+	InsSMUDP = new ServerManager(UDP, 8888);
+	InsSMTCP = new ServerManager(TCP, 9999);
+
+	thread t1(RecvStart, InsSMUDP);
+	thread t2(RecvStart, InsSMTCP);
+	t1.join();
+	t2.join();
+
+	delete(InsSMTCP);
+	delete(InsSMUDP);
 	return 0;
 
 }

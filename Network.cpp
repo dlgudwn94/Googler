@@ -111,7 +111,8 @@ int Network::RecvToClientTCP() {
 	
 	error = recv(mClientSocketInTCP, mRecvBuffer, mBuffSize, 0);
 
-	
+	if (error == 0)
+		AcceptTCP();
 	if (error == -1)
 		cout << "ERROR: recv Fail" << endl;
 

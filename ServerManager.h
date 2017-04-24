@@ -6,6 +6,8 @@
 #include "Network.h"
 #include "filemanage.h"
 
+#define UDP 0
+#define TCP 1
 
 class ServerManager {
 private:
@@ -13,9 +15,13 @@ private:
 	FileManage* mFileIns;
 	char mRecvBuffer[BUFF_SIZE];
 
+	void FileRecvStartUDP();
+	void FileRecvStartTCP();
+
+	int mProtocal;
 
 public:
-	ServerManager();
+	ServerManager(int protocal, int port);
 	~ServerManager();
 
 	void FileRecvStart();

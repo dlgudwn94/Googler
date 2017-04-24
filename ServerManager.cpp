@@ -1,11 +1,9 @@
 #include "ServerManager.h"
 
-ServerManager::ServerManager() {
-	this->mNetworkIns = new Network(mRecvBuffer, BUFF_SIZE, 8888);
+ServerManager::ServerManager(int prococal, int port) {
+	this->mNetworkIns = new Network(mRecvBuffer, BUFF_SIZE, port);
 	this->mFileIns = new FileManage(mRecvBuffer);
-	//mNetworkIns->ConnectUDP();
-	mNetworkIns->ConnectTCP();
-
+	this->mProtocal = prococal;
 }
 
 ServerManager::~ServerManager() {
@@ -14,19 +12,81 @@ ServerManager::~ServerManager() {
 }
 
 void ServerManager::FileRecvStart() {
-	int count = 0;
+	if (mProtocal == UDP)
+		FileRecvStartUDP();
+	else if (mProtocal == TCP)
+		FileRecvStartTCP();
+	else {
+		cout << "ERROR: wrong Protocal" << endl;
+		exit(1);
+	}
+}
+
+void ServerManager::FileRecvStartTCP() {
 	
+	mNetworkIns->ConnectTCP();
+
 	mNetworkIns->AcceptTCP();
 		
-
+	//time
+	DWORD t = GetTickCount();
+	int count = 1;
+	//time end
+	
 	while (true) {
 
+		//time
+		if (GetTickCount() - t >= 1000) {
+			cout << " transmission time : " << (count * STRUCT_SIZE)
+				<< " byte/sec" << endl;
+			t = GetTickCount();
+			count = 0;
+		}
+		//time end
+
 		cout << "Waitting for Recive\n";
-		//if (mNetworkIns->RecvToClientUDP() == -1) {
 		if (mNetworkIns->RecvToClientTCP() == -1) {
 			cout << "ERRER: Packet Recv Fail" << endl;
 			exit(1);
 		}
+		count++;	
+		
+		if(mFileIns->RecvPacket()) {
+			cout << "ERRER: Can't Create File" << endl;
+			exit(1);
+		}
+		cout << "Recv Packet num : " << count << endl;
+		cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
+	}
+		
+}
+
+void ServerManager::FileRecvStartUDP() {
+
+	mNetworkIns->ConnectUDP();
+
+	//time
+	DWORD t = GetTickCount();
+	int count = 1;
+	//time end
+
+	while (true) {
+
+		//time
+		if (GetTickCount() - t >= 1000) {
+			cout << " transmission time : " << (count * STRUCT_SIZE)
+				<< " byte/sec" << endl;
+			t = GetTickCount();
+			count = 0;
+		}
+		//time end
+
+		cout << "Waitting for Recive\n";
+		if (mNetworkIns->RecvToClientUDP() == -1) {
+			cout << "ERRER: Packet Recv Fail" << endl;
+			exit(1);
+		}
+		count++;
 
 		if (mFileIns->RecvPacket()) {
 			cout << "ERRER: Can't Create File" << endl;
@@ -34,7 +94,6 @@ void ServerManager::FileRecvStart() {
 		}
 		cout << "Recv Packet num : " << count << endl;
 		cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
-		count++;
 	}
-		
+
 }
