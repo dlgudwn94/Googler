@@ -1,5 +1,5 @@
 #include "filemanage.h"
-
+#include "zipunzip.h"
 #define DEBUG false
 
 FileManage::FileManage(char* buffer) {
@@ -59,8 +59,14 @@ int FileManage::FileClose() {
 	return 0;
 }
 
-int FileManage::GetMd5() {
+int FileManage::Complete() {
 	FileClose();
+	GetMd5();
+	Unzip();
+	return 0;
+}
+
+int FileManage::GetMd5() {
 	receive_md5 = pk->buff;
 	MakeMd5();
 	cout << "receive md5:" << receive_md5 << endl;
@@ -77,6 +83,11 @@ int FileManage::MakeMd5() {
 	return 0;
 }
 
+int FileManage::Unzip() {
+	zipper zp;
+	return zp.Zipper_Unzip(strdup(FileName.c_str()));
+}
+
 int FileManage::RecvPacket() {
 	pk = (packet*)mRecvBuffer;
 
@@ -85,8 +96,8 @@ int FileManage::RecvPacket() {
 
 	switch (pk->meta)
 	{
-	case -3://md5값
-		return GetMd5();
+	case -3://마지막 md5값들어옴
+		return Complete();
 		break;
 	case -2://이름
 		return SetFileName(pk->buff);

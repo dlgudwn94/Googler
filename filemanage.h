@@ -33,6 +33,8 @@ private:
 	int FileClose();
 	int GetMd5();
 	int MakeMd5();
+	int Unzip();
+	int Complete();
 public:
 	FileManage(char* buffer);
 	~FileManage();
