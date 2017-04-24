@@ -18,14 +18,17 @@ private:
 
 	struct sockaddr_in mDstAddress;
 	char* mSendBuffer;
+	int mBufferSize;
 	int mPort;
 
 public:
-	Network(char* sendBuffer, int portNum, string dstIp);
+	Network(char* sendBuffer, int buffSize, int portNum, string dstIp);
 	~Network();
 	
 	void ConnectUDP();
-	int SendToDst();
+	void ConnectTCP();
+	int SendToDstUDP();
+	int SendToDstTCP();
 };
 
 #endif // !__NETWORK

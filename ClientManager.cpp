@@ -10,16 +10,19 @@ ClientManager::ClientManager()
 	cout << "Input open file address: ";
 	getline(cin, filename);
 
-	this->mNetworkIns = new Network(mSendBuffer, 8888, Ip);
+	this->mNetworkIns = new Network(mSendBuffer, BUFF_SIZE, 8888, Ip);
 	this->mFileIns = new FileTransfer(filename, mSendBuffer);
 
-	mNetworkIns->ConnectUDP();
+	//mNetworkIns->ConnectUDP();
+	mNetworkIns->ConnectTCP();
 
 	if (mFileIns->FileStreamOpen() == -1)
 		exit(1);
 
 	// send filename
-	if (mNetworkIns->SendToDst() == -1)
+	//if (mNetworkIns->SendToDstUDP() == -1)
+	//	exit(1);
+	if (mNetworkIns->SendToDstTCP() == -1)
 		exit(1);
 }
 
@@ -35,14 +38,18 @@ void ClientManager::FileSendStart()
 	{
 		if (mFileIns->ReadyToPacket() == 0)
 		{
-			if (mNetworkIns->SendToDst() == -1)
+			//if (mNetworkIns->SendToDstUDP() == -1)
+			//	exit(1);
+			if (mNetworkIns->SendToDstTCP() == -1)
 				exit(1);
 
 			cout << "전송완료" << endl;
 			break;
 		}
 		
-		if (mNetworkIns->SendToDst() == -1)
+		//if (mNetworkIns->SendToDstUDP() == -1)
+		//	exit(1);
+		if (mNetworkIns->SendToDstTCP() == -1)
 			exit(1);
 	}
 }
