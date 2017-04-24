@@ -18,6 +18,7 @@ private:
 	int mPort;
 	WSADATA mWsaData;
 	SOCKET mServerSocket;
+	SOCKET mClientSocketInTCP;
 	int mBuffSize;
 	struct sockaddr_in mAddress;
 	struct sockaddr_in mClient_addr;
@@ -27,7 +28,10 @@ public:
 	Network(char* recvBuffer, int bufSize, int portNum);
 	~Network();
 	void ConnectUDP();
-	int RecvToClient();
+	void ConnectTCP();
+	bool AcceptTCP();
+	int RecvToClientUDP();
+	int RecvToClientTCP();
 };
 
 #endif // !__NETWORK
