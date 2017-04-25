@@ -101,12 +101,14 @@ int FileManage::RecvPacket() {
 		return Complete();
 		break;
 	case -2://이름
+		cout << "전송 시작" << endl;
 		return SetFileName(pk->buff);
 		break;
 	case -1://내용
 		return WriteFile();
 		break;
 	default://0~buffsize 내용끝
+		cout << "전송 완료 -> 대기" << endl;
 		return FileEnd();
 		break;
 	}

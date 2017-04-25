@@ -4,6 +4,8 @@ ServerManager::ServerManager(int prococal, int port) {
 	this->mNetworkIns = new Network(mRecvBuffer, BUFF_SIZE, port);
 	this->mFileIns = new FileManage(mRecvBuffer);
 	this->mProtocal = prococal;
+
+	cout << "Server Init ..." << endl;
 }
 
 ServerManager::~ServerManager() {
@@ -25,6 +27,8 @@ void ServerManager::FileRecvStart() {
 void ServerManager::FileRecvStartTCP() {
 	
 	mNetworkIns->ConnectTCP();
+
+	cout << "TCP Recv Stand by" << endl;
 
 	mNetworkIns->AcceptTCP();
 		
@@ -55,8 +59,8 @@ void ServerManager::FileRecvStartTCP() {
 			cout << "ERRER: Can't Create File" << endl;
 			exit(1);
 		}
-		cout << "Recv Packet num : " << count << endl;
-		cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
+		//cout << "Recv Packet num : " << count << endl;
+		//cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
 	}
 		
 }
@@ -64,6 +68,8 @@ void ServerManager::FileRecvStartTCP() {
 void ServerManager::FileRecvStartUDP() {
 
 	mNetworkIns->ConnectUDP();
+
+	cout << "UDP Recv Stand by" << endl;
 
 	//time
 	DWORD t = GetTickCount();
@@ -92,8 +98,8 @@ void ServerManager::FileRecvStartUDP() {
 			cout << "ERRER: Can't Create File" << endl;
 			exit(1);
 		}
-		cout << "Recv Packet num : " << count << endl;
-		cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
+		//cout << "Recv Packet num : " << count << endl;
+		//cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
 	}
 
 }

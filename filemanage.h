@@ -8,7 +8,7 @@
 #include <string>
 #include "md5wrapper.h"
 
-#define BUFF_SIZE (1024)
+#define BUFF_SIZE (1024 * 32)
 #define STRUCT_SIZE (BUFF_SIZE - 4)
 
 struct packet {
