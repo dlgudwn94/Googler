@@ -8,7 +8,7 @@
 #include <iostream>
 #include <string>
 
-#define BUFF_SIZE (1024)
+#define BUFF_SIZE (1024 * 32)
 #define DATA_SIZE (BUFF_SIZE - 4)
 
 class Packet

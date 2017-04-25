@@ -49,7 +49,7 @@ int FileTransfer::ReadyToPacket()
 		
 		if (mPacket->metaData == DATA_SIZE)
 		{
-			cout << "Packet size full" << endl;
+			//cout << "Packet size full" << endl;
 			mPacket->metaData = -1;
 
 			return 1;

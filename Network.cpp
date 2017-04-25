@@ -44,7 +44,7 @@ int Network::SendToDstUDP()
 {
 	int error;
 	
-	cout << "Transmission data " << mSendBuffer << endl;
+	//cout << "Transmission data " << mSendBuffer << endl;
 	
 	error = sendto(mClientSocket, mSendBuffer, mBufferSize, 0,
 		(struct sockaddr*)&mDstAddress, sizeof(mDstAddress));
@@ -91,7 +91,7 @@ int Network::SendToDstTCP()
 {
 	int error;
 
-	cout << "Transmission data " << mSendBuffer << endl;
+	//cout << "Transmission data " << mSendBuffer << endl;
 
 	error = send(mClientSocket, mSendBuffer, mBufferSize, 0);
 
