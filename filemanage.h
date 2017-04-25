@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include "md5wrapper.h"
+
 #define BUFF_SIZE (1024)
 #define STRUCT_SIZE (BUFF_SIZE - 4)
 

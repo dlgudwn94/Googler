@@ -85,7 +85,8 @@ int FileManage::MakeMd5() {
 
 int FileManage::Unzip() {
 	zipper zp;
-	return zp.Zipper_Unzip(strdup(FileName.c_str()));
+	zp.Set_Name(FileName);
+	return zp.Zipper_Unzip();
 }
 
 int FileManage::RecvPacket() {

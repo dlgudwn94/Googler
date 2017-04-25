@@ -5,29 +5,36 @@
 #include <iostream>
 #include "zlib/zipper.h"
 #include "zlib/unzipper.h"
+#include <string>
+
 using namespace std;
 
 class zipper{
 public:
-	int Zipper_Zip(char *srcFileName);
-	int Zipper_Unzip(char *srcFileName);
+	int Zipper_Zip();
+	int Zipper_Unzip();
+	void Set_Name(string srcFileName);
 private:
 	bool bSrcIsDirectory;
-	int Zipper_isDir(char *srcFileName);
+	int Zipper_isDir();
+	string srcFileName;
 };
 
+void zipper::Set_Name(string FileName) {
+	srcFileName = FileName;
+}
 
-int zipper::Zipper_Zip(char *srcFileName) {
+int zipper::Zipper_Zip() {
 
 	bool br;
-	Zipper_isDir(srcFileName);
+	Zipper_isDir();
 	// 디렉토리인 경우
 	if (bSrcIsDirectory) {
-		br = CZipper::ZipFolder(srcFileName, FALSE);
+		br = CZipper::ZipFolder(srcFileName.c_str(), FALSE);
 	}
 	// 파일인 경우
 	else {
-		br = CZipper::ZipFile(srcFileName);
+		br = CZipper::ZipFile(srcFileName.c_str());
 	}
 	if (br) {
 		cout << "compression completed." << endl;
@@ -39,9 +46,13 @@ int zipper::Zipper_Zip(char *srcFileName) {
 	return 0;
 }
 
-int zipper::Zipper_Unzip(char *srcFileName) {
+int zipper::Zipper_Unzip() {
 	bool br;
-	Zipper_isDir(srcFileName);
+	char getdir[MAX_PATH];
+	Zipper_isDir();
+	GetCurrentDirectory(MAX_PATH, getdir);
+	string dir(getdir);
+	dir.append("\\");
 	// 디렉토리인 경우
 	if (bSrcIsDirectory) {
 		cout << srcFileName << " isn't a file" << endl;
@@ -50,9 +61,9 @@ int zipper::Zipper_Unzip(char *srcFileName) {
 	// 파일인 경우
 	else {
 		CUnzipper uz;
-		br = uz.OpenZip(srcFileName);
-		if (br) br = uz.UnzipTo(".");
-		if (!br) br = uz.UnzipTo(".",TRUE);
+		br = uz.OpenZip(srcFileName.c_str());
+		if (br) br = uz.UnzipTo(dir.c_str());
+		if (!br) br = uz.UnzipTo(dir.c_str(), TRUE);
 		if (br) {
 			cout << "decompression completed." << endl;
 		}
@@ -64,9 +75,9 @@ int zipper::Zipper_Unzip(char *srcFileName) {
 	return 0;
 }
 
-int zipper::Zipper_isDir(char *srcFileName) {
+int zipper::Zipper_isDir() {
 	DWORD fileAttr;
-	bSrcIsDirectory = ((fileAttr = GetFileAttributes(srcFileName)) & FILE_ATTRIBUTE_DIRECTORY) > 0;
+	bSrcIsDirectory = ((fileAttr = GetFileAttributes(srcFileName.c_str())) & FILE_ATTRIBUTE_DIRECTORY) > 0;
 	if (fileAttr == 0xFFFFFFFF) {
 		cout << "file not exist or has unknown problems" << endl;
 		return 1;
