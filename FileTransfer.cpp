@@ -1,12 +1,16 @@
 #include "FileTransfer.h"
 #include "md5wrapper.h"
 #include "zlib\Zipper.h"
-
+#include <Windows.h>
 FileTransfer::FileTransfer(string filename, char* sendBuffer)
 {
 	this->mFileName = filename;
 	this->isTransferComplete = false;
-
+	char getdir[MAX_PATH];
+	src = "";
+	GetCurrentDirectory(MAX_PATH, getdir);
+	src.append(getdir);
+	src.append("\\");
 	//serialize
 	mPacket = (Packet*)sendBuffer;
 }
@@ -20,7 +24,7 @@ int FileTransfer::FileStreamOpen()
 {
 	makeZip();
 
-	mFileIfstream.open(srcFileName, ios::in | ios::binary);
+	mFileIfstream.open(mFileName.c_str(), ios::in | ios::binary);
 
 	if (! mFileIfstream.is_open())
 	{
@@ -31,7 +35,7 @@ int FileTransfer::FileStreamOpen()
 
 	// first packet
 	mPacket->metaData = -2;
-	strcpy(mPacket->dataBuffer, srcFileName);
+	strcpy(mPacket->dataBuffer, mFileName.c_str());
 	
 	return 0;
 }
@@ -82,37 +86,19 @@ bool FileTransfer::isComplete()
 void  FileTransfer::getMd5()
 {
 	md5wrapper md5;
-	md5_hash = md5.getHashFromFile(srcFileName);
+	md5_hash = md5.getHashFromFile(mFileName.c_str());
 }
 
 void FileTransfer::makeZip()
 {
 	bool bSrcIsDirectory, br;
 	DWORD fileAttr;
-
-	srcFileName = (char *)malloc(sizeof(char) * 100);
-
-	printf("malloc\n");
-
-	this->srcFileName = "C:\\Users\\IS-3\\Documents\\Project1\\Debug\0";
-
-	printf("경로\n");
-
-	this->tmp = new char[mFileName.size() +1];
-	copy(mFileName.begin(), mFileName.end(), tmp);
-	tmp[mFileName.size()] = '\0';
-
-	printf("tmp\n");
-
-	strcat(srcFileName, tmp);
-
-	printf("strcat\n");
-
-	bSrcIsDirectory = ((fileAttr = GetFileAttributes(srcFileName)) & FILE_ATTRIBUTE_DIRECTORY) > 0;
+	int tmp;
+	bSrcIsDirectory = ((fileAttr = GetFileAttributes((src+mFileName).c_str())) & FILE_ATTRIBUTE_DIRECTORY) > 0;
 	
 	if (fileAttr == 0xFFFFFFFF)
 	{
-		printf("file not exist or has unknown problems");
+		cout<<"file not exist or has unknown problems"<<endl;
 		exit(0);
 	}
 	
@@ -120,12 +106,19 @@ void FileTransfer::makeZip()
 	{
 		// 디렉토리인 경우
 		if (bSrcIsDirectory)
-			br = CZipper::ZipFolder(srcFileName, FALSE);
+			br = CZipper::ZipFolder((src + mFileName).c_str(), FALSE);
 
 		// 파일인 경우
 		else
-			br = CZipper::ZipFile(srcFileName);
-
-		cout << (br ? "compression completed." : "error occured.") << endl;
+			br = CZipper::ZipFile((src + mFileName).c_str());
+		if (br) {
+			cout <<  "compression completed." << endl;
+			tmp = mFileName.find_last_of(".");
+			mFileName = mFileName.substr(0, tmp);
+			mFileName.append(".zip");
+		}
+		else {
+			cout << "error occured." << endl;
+		}
 	}
 }

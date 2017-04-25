@@ -24,6 +24,7 @@ class FileTransfer
 {
 private:
 	string mFileName;
+	string src;
 	ifstream mFileIfstream;
 	Packet *mPacket;
 	string md5_hash;
@@ -34,7 +35,7 @@ public:
 	FileTransfer(string fileName, char* sendBuffer);
 	~FileTransfer();
 
-	char *srcFileName;
+	//char *srcFileName;
 	char *tmp;
 	int FileStreamOpen();
 	int ReadyToPacket();
