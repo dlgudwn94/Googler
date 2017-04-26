@@ -6,7 +6,7 @@ int main(void)
 
 	string protocal;
 
-	cout << "input protocal : ";
+	cout << "input protocal (TCP,UDP) : ";
 	cin >> protocal;
 	cin.ignore();
 

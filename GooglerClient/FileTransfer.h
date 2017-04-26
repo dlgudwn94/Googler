@@ -28,7 +28,7 @@ private:
 	ifstream mFileIfstream;
 	Packet *mPacket;
 	string md5_hash;
-
+	string str_sd;
 	bool isTransferComplete;
 
 public:
@@ -37,8 +37,11 @@ public:
 
 	//char *srcFileName;
 	char *tmp;
+	int SetFile();
 	int FileStreamOpen();
+	int FileStreamClose();
 	int ReadyToPacket();
+	int ReadyToFolderPacket();
 	void getMd5();
 	void makeZip();
 	bool isComplete();

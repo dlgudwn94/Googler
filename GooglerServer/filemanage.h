@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <direct.h>
 #include "md5wrapper.h"
 
 #define BUFF_SIZE (1024 * 32)
@@ -34,8 +35,8 @@ private:
 	int FileClose();
 	int GetMd5();
 	int MakeMd5();
-	int Unzip();
 	int Complete();
+	int GetFolderName();
 public:
 	FileManage(char* buffer);
 	~FileManage();

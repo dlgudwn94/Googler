@@ -95,7 +95,7 @@ void ServerManager::FileRecvStartUDP() {
 		count++;
 
 		if (mFileIns->RecvPacket()) {
-			cout << "ERRER: Can't Create File" << endl;
+			cout << "ERRER: Packet Read Fail" << endl;
 			exit(1);
 		}
 		//cout << "Recv Packet num : " << count << endl;

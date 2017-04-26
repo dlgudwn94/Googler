@@ -1,5 +1,4 @@
 #include "filemanage.h"
-#include "zipunzip.h"
 #define DEBUG false
 
 FileManage::FileManage(char* buffer) {
@@ -62,7 +61,6 @@ int FileManage::FileClose() {
 int FileManage::Complete() {
 	FileClose();
 	GetMd5();
-	Unzip();
 	return 0;
 }
 
@@ -83,10 +81,9 @@ int FileManage::MakeMd5() {
 	return 0;
 }
 
-int FileManage::Unzip() {
-	zipper zp;
-	zp.Set_Name(FileName);
-	return zp.Zipper_Unzip();
+int FileManage::GetFolderName() {
+	_mkdir(pk->buff);
+	return 0;
 }
 
 int FileManage::RecvPacket() {
@@ -97,6 +94,9 @@ int FileManage::RecvPacket() {
 
 	switch (pk->meta)
 	{
+	case -4://디렉토리명 받음
+		return GetFolderName();
+		break;
 	case -3://마지막 md5값들어옴
 		return Complete();
 		break;
