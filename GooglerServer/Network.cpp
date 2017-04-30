@@ -6,12 +6,12 @@ Network::Network(char* recvBuffer, int bufSize, int portNum) {
 	this->mPort = portNum;
 	this->mRecvBuffer = recvBuffer;
 	this->mBuffSize = bufSize;
-
-	
+	mClientAddrSize = 0;
+	mAddressSize = 0;
 }
 
 Network::~Network() {
-	if(mClientSocketInTCP != INVALID_SOCKET)
+	if (mClientSocketInTCP != INVALID_SOCKET)
 		closesocket(mClientSocketInTCP);
 	closesocket(mServerSocket);
 	WSACleanup();
@@ -61,14 +61,14 @@ int Network::RecvToClientUDP() {
 }
 
 void Network::ConnectTCP() {
-	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != NO_ERROR)
+	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != 0)
 	{
 		cerr << "ERROR: SOCKET Initialization - WSAStartup" << endl;
 		WSACleanup();
 		exit(10);
 	}
 
-	mServerSocket = socket(PF_INET, SOCK_STREAM, 0);
+	mServerSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (mServerSocket == INVALID_SOCKET)
 	{
 		cerr << "ERROR: SOCKET Initialization - creating socket" << endl;
@@ -76,45 +76,54 @@ void Network::ConnectTCP() {
 		exit(11);
 	}
 
-
+	memset(&mAddress, 0, sizeof(mAddress));
 	mAddress.sin_family = AF_INET;
-	mAddress.sin_port = htons(mPort);
 	mAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+	mAddress.sin_port = htons(mPort);
 	
-	if (bind(mServerSocket, (SOCKADDR*)&mAddress, sizeof(mAddress)) == SOCKET_ERROR) {
+	if (bind(mServerSocket, (SOCKADDR*)&mAddress, sizeof(SOCKADDR_IN)) == SOCKET_ERROR) {
 		cerr << "ERROR: ServerSocket connect fail" << endl;
 		WSACleanup();
 		exit(14);
 	}
+	cout << "bind clear" << endl;
 
-	if (listen(mServerSocket, LISTENQUEUESIZE) == SOCKET_ERROR) {
+	if (listen(mServerSocket, LISTENQUEUESIZE) == -1) {
 		cerr << "ERROR: ServerSocket listen fail" << endl;
 		WSACleanup();
 		exit(14);
 	}
+	cout << "listen clear" << endl;
 
-	mClientAddrSize = sizeof(mClient_addr);
 	
+	mAddressSize = sizeof(mAddress);
+	cout << "Waiting Connect from client" << endl;
 }
 
 bool Network::AcceptTCP() {
+	mClientAddrSize = sizeof(mClient_addr);
 	mClientSocketInTCP = accept(mServerSocket, (SOCKADDR*)&mClient_addr, &mClientAddrSize);
 	if (mClientSocketInTCP == INVALID_SOCKET) {
 		cerr << "ERROR: Client Socket accept fail" << endl;
 		return false;
 	}
+	cout << "접속 IP : " << inet_ntoa(mClient_addr.sin_addr) << endl;
 	return true;
 }
 
 int Network::RecvToClientTCP() {
 	int error;
-	
-	error = recv(mClientSocketInTCP, mRecvBuffer, mBuffSize, 0);
 
-	if (error == 0)
-		AcceptTCP();
+	error = recv(mClientSocketInTCP, mRecvBuffer, mBuffSize, 0);
+	cout << "recv packet" << endl;
+	if (error == 0) {
+		cout << "전송 완료.." << endl;
+	}
 	if (error == -1)
 		cout << "ERROR: recv Fail" << endl;
+
+	//CloseHandle(CreateThread(0, 0, Print, (void*)mClientSocketInTCP, 0, 0));
+	//cout << mRecvBuffer << endl;
 
 	return error;
 }

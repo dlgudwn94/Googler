@@ -12,6 +12,8 @@ Network::Network(char* sendBuffer, int buffSize, int portNum, string dstIp)
 
 Network::~Network()
 {
+	if (shutdown(mClientSocket, SD_SEND) == SOCKET_ERROR)
+		cout << "shutdown()" << endl;
 	closesocket(mClientSocket);
 	WSACleanup();
 }
@@ -43,15 +45,16 @@ void Network::ConnectUDP()
 int Network::SendToDstUDP()
 {
 	int error;
-	
+
 	//cout << "Transmission data " << mSendBuffer << endl;
-	
+	Sleep(1);
+
 	error = sendto(mClientSocket, mSendBuffer, mBufferSize, 0,
 		(struct sockaddr*)&mDstAddress, sizeof(mDstAddress));
 
 	if (error == -1)
 		cout << "ERROR: Sendto fail" << endl;
-	
+
 	return error;
 }
 
@@ -59,14 +62,14 @@ void Network::ConnectTCP()
 {
 	int error;
 
-	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != NO_ERROR)
+	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != 0)
 	{
 		cerr << "ERROR: SOCKET initialization - WSAStartup" << endl;
 		WSACleanup();
 		exit(10);
 	}
 
-	mClientSocket = socket(PF_INET, SOCK_STREAM, 0);
+	mClientSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (mClientSocket == INVALID_SOCKET)
 	{
@@ -77,23 +80,24 @@ void Network::ConnectTCP()
 
 	memset(&mDstAddress, 0, sizeof(mDstAddress));
 	mDstAddress.sin_family = AF_INET;
-	mDstAddress.sin_port = htons(mPort);
 	mDstAddress.sin_addr.s_addr = inet_addr(mDstIp.c_str());
-
+	mDstAddress.sin_port = htons(mPort);
+	
 	error = connect(mClientSocket, (SOCKADDR*)&mDstAddress, sizeof(mDstAddress));
 	if (error == SOCKET_ERROR) {
 		cerr << "ERROR: client Connect Fail" << endl;
 		exit(14);
 	}
+	cout << "Connecting" << endl;
 }
 
-int Network::SendToDstTCP()
+int Network::SendToDstTCP(int bufLen)
 {
 	int error;
 
 	//cout << "Transmission data " << mSendBuffer << endl;
 
-	error = send(mClientSocket, mSendBuffer, mBufferSize, 0);
+	error = send(mClientSocket, mSendBuffer, bufLen, 0);
 
 	if (error == -1)
 		cout << "ERROR: Send Fail" << endl;
