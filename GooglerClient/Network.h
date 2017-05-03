@@ -31,7 +31,7 @@ public:
 	void ConnectUDP();
 	void ConnectTCP();
 	int SendToDstUDP();
-	int SendToDstTCP(int bufLen);
+	int SendToDstTCP(char* buf, int bufLen);
 };
 
 #endif // !__NETWORK

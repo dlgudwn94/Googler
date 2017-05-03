@@ -91,13 +91,13 @@ void Network::ConnectTCP()
 	cout << "Connecting" << endl;
 }
 
-int Network::SendToDstTCP(int bufLen)
+int Network::SendToDstTCP(char* buf, int bufLen)
 {
 	int error;
 
 	//cout << "Transmission data " << mSendBuffer << endl;
 
-	error = send(mClientSocket, mSendBuffer, bufLen, 0);
+	error = send(mClientSocket, buf, bufLen, 0);
 
 	if (error == -1)
 		cout << "ERROR: Send Fail" << endl;

@@ -111,19 +111,31 @@ bool Network::AcceptTCP() {
 	return true;
 }
 
-int Network::RecvToClientTCP() {
-	int error;
+int Network::RecvToClientTCP(char* buf, int size) {
+	int total_received;
+	int received;
+	
+	total_received = 0;
 
-	error = recv(mClientSocketInTCP, mRecvBuffer, mBuffSize, 0);
-	cout << "recv packet" << endl;
-	if (error == 0) {
-		cout << "전송 완료.." << endl;
+	while (size) {
+		received = recv(mClientSocketInTCP, buf, size, 0);
+
+		if (received <= 0)
+			break;
+
+		total_received += received;
+		size -= received;
+
+		buf += received;
 	}
-	if (error == -1)
-		cout << "ERROR: recv Fail" << endl;
 
-	//CloseHandle(CreateThread(0, 0, Print, (void*)mClientSocketInTCP, 0, 0));
-	//cout << mRecvBuffer << endl;
-
-	return error;
+	if (received == 0) {
+		cout << "전송완료 .." << endl;
+	}
+	else if (received == -1) {
+		cout << "ERROR: Recv Fail" << endl;
+	}
+	
+	//receive == 0 종료 , -1 에러
+	return received > 0 ? total_received : received;
 }

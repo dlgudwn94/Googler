@@ -33,7 +33,7 @@ public:
 	void ConnectTCP();
 	bool AcceptTCP();
 	int RecvToClientUDP();
-	int RecvToClientTCP();
+	int RecvToClientTCP(char* buf, int bufLen);
 };
 
 #endif // !__NETWORK
