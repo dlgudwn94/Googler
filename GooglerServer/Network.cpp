@@ -2,10 +2,8 @@
 
 #define LISTENQUEUESIZE 5
 
-Network::Network(char* recvBuffer, int bufSize, int portNum) {
+Network::Network(int portNum) {
 	this->mPort = portNum;
-	this->mRecvBuffer = recvBuffer;
-	this->mBuffSize = bufSize;
 	mClientAddrSize = 0;
 	mAddressSize = 0;
 }
@@ -46,6 +44,7 @@ void Network::ConnectUDP() {
 	}
 }
 
+/*
 int Network::RecvToClientUDP() {
 	int error;
 	mClientAddrSize = sizeof(mClient_addr);
@@ -59,6 +58,7 @@ int Network::RecvToClientUDP() {
 
 	return error;
 }
+*/
 
 void Network::ConnectTCP() {
 	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != 0)

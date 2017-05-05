@@ -89,7 +89,7 @@ int FileTransfer::ReadyToPacket()
 
 		else
 		{
-			cout << "Last packet" << endl;
+			//cout << "Last packet" << endl;
 			//isTransferComplete = true;
 
 			return 1;

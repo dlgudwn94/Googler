@@ -1,7 +1,7 @@
 #include "ServerManager.h"
 
 ServerManager::ServerManager(int prococal, int port) {
-	this->mNetworkIns = new Network(mRecvBuffer, BUFF_SIZE, port);
+	this->mNetworkIns = new Network(port);
 	this->mFileIns = new FileManage(mRecvBuffer);
 	this->mProtocal = prococal;
 
@@ -14,9 +14,9 @@ ServerManager::~ServerManager() {
 }
 
 void ServerManager::FileRecvStart() {
-	if (mProtocal == UDP)
-		FileRecvStartUDP();
-	else if (mProtocal == TCP)
+	//if (mProtocal == UDP)
+		//FileRecvStartUDP();
+	if (mProtocal == TCP)
 		FileRecvStartTCP();
 	else {
 		cout << "ERROR: wrong Protocal" << endl;
@@ -37,6 +37,7 @@ void ServerManager::FileRecvStartTCP() {
 	int count = 1;
 	//time end
 	
+	int err;
 	while (true) {
 
 		//time
@@ -48,16 +49,24 @@ void ServerManager::FileRecvStartTCP() {
 		}
 		//time end
 
-		cout << "Waitting for Recive\n";
-		if (mNetworkIns->RecvToClientTCP() == -1) {
+		err = mNetworkIns->RecvToClientTCP(mRecvBuffer, BUFF_SIZE);
+		if (err == -1) {
 			cout << "ERRER: Packet Recv Fail" << endl;
-			exit(1);
+			cout << "ReAccept process.." << endl;
+			mNetworkIns->AcceptTCP();
 		}
-		count++;	
-		
-		if(mFileIns->RecvPacket()) {
-			cout << "ERRER: Can't Create File" << endl;
-			exit(1);
+
+		if (err == 0) {
+			cout << "ReAccept process.." << endl;
+			mNetworkIns->AcceptTCP();
+		}
+		else {
+			count++;
+
+			if (mFileIns->RecvPacket()) {
+				cout << "ERRER: Can't Create File" << endl;
+				exit(1);
+			}
 		}
 		//cout << "Recv Packet num : " << count << endl;
 		//cout << "<- Metadata, isComplete? : " << mFileIns->IsOpen() << endl;
@@ -65,6 +74,7 @@ void ServerManager::FileRecvStartTCP() {
 		
 }
 
+/*
 void ServerManager::FileRecvStartUDP() {
 
 	mNetworkIns->ConnectUDP();
@@ -103,3 +113,4 @@ void ServerManager::FileRecvStartUDP() {
 	}
 
 }
+*/

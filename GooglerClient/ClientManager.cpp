@@ -10,7 +10,7 @@ ClientManager::ClientManager(int protocal, int port)
 	cout << "Input open file address: ";
 	getline(cin, filename);
 
-	this->mNetworkIns = new Network(mSendBuffer, BUFF_SIZE, port, Ip);
+	this->mNetworkIns = new Network(port, Ip);
 	this->mFileIns = new FileTransfer(filename, mSendBuffer);
 
 	mProtocal = protocal;
@@ -23,9 +23,9 @@ ClientManager::~ClientManager()
 }
 
 void ClientManager::FileSendStart() {
-	if (mProtocal == UDP)
-		FileSendStartUDP();
-	else if (mProtocal == TCP)
+	//if (mProtocal == UDP)
+	//	FileSendStartUDP();
+	if (mProtocal == TCP)
 		FileSendStartTCP();
 	else {
 		cout << "ERROR: INVALID Protocal" << endl;
@@ -44,16 +44,16 @@ void ClientManager::FileSendStartTCP()
 		flg = mFileIns->SetFile();//구분하기
 		if (flg == 0) {//디렉토리일경우
 			mFileIns->ReadyToFolderPacket();
-			if (mNetworkIns->SendToDstTCP() == -1) exit(1);
+			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 			count++;
 		}
 		else if (flg == 2) {//파일일경우
 			//file open and name send
 			if (mFileIns->FileStreamOpen() == -1) exit(1);
-			if (mNetworkIns->SendToDstTCP() == -1) exit(1);
+			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 
 			while (mFileIns->ReadyToPacket() != 0) {//파일전송
-				if (mNetworkIns->SendToDstTCP() == -1) exit(1);
+				if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 				//time
 				count++;
 				if (GetTickCount() - t >= 1000) {
@@ -63,7 +63,7 @@ void ClientManager::FileSendStartTCP()
 					count = 0;
 				}//time end
 			}
-			if (mNetworkIns->SendToDstTCP() == -1) exit(1);//해쉬전송
+			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);//해쉬전송
 			cout << "전송" << endl;
 		}
 		else {
@@ -75,6 +75,7 @@ void ClientManager::FileSendStartTCP()
 	}
 }
 
+/*
 void ClientManager::FileSendStartUDP()
 {
 	mNetworkIns->ConnectUDP();
@@ -117,3 +118,4 @@ void ClientManager::FileSendStartUDP()
 		}
 	}
 }
+*/

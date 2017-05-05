@@ -20,17 +20,15 @@ private:
 	SOCKET mClientSocket;
 
 	struct sockaddr_in mDstAddress;
-	char* mSendBuffer;
-	int mBufferSize;
 	int mPort;
 
 public:
-	Network(char* sendBuffer, int buffSize, int portNum, string dstIp);
+	Network(int portNum, string dstIp);
 	~Network();
 
 	void ConnectUDP();
 	void ConnectTCP();
-	int SendToDstUDP();
+	//int SendToDstUDP();
 	int SendToDstTCP(char* buf, int bufLen);
 };
 

@@ -13,14 +13,17 @@ void RecvStart(ServerManager* a) {
 #define BUFSIZE (1024*32)
 
 int main(void) {
+	
+	//ServerManager* InsSMUDP;
+	ServerManager InsSMTCP(TCP, 9999);
+
+
+	//InsSMUDP = new ServerManager(UDP, 8888);
+	//InsSMTCP = new ServerManager(TCP, 9999);
+
+	InsSMTCP.FileRecvStart();
+
 	/*
-	ServerManager* InsSMUDP;
-	ServerManager* InsSMTCP;
-
-
-	InsSMUDP = new ServerManager(UDP, 8888);
-	InsSMTCP = new ServerManager(TCP, 9999);
-
 	thread t1(RecvStart, InsSMUDP);
 	thread t2(RecvStart, InsSMTCP);
 	t1.join();
@@ -29,6 +32,7 @@ int main(void) {
 	delete(InsSMTCP);
 	delete(InsSMUDP);
 	*/
+	/*
 	FILE* file;
 
 	char buf[BUFSIZE];
@@ -48,7 +52,7 @@ int main(void) {
 	fclose(file);
 
 	net.~Network();
-	
+	*/
 	return 0;
 
 }

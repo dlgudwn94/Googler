@@ -14,25 +14,23 @@ using namespace std;
 
 class Network {
 private:
-	char* mRecvBuffer;
-
 	int mPort;
 	WSADATA mWsaData;
 	SOCKET mServerSocket;
 	SOCKET mClientSocketInTCP;
-	int mBuffSize;
+	
 	struct sockaddr_in mAddress;
 	struct sockaddr_in mClient_addr;
 	int mClientAddrSize;
 	int mAddressSize;
 
 public:
-	Network(char* recvBuffer, int bufSize, int portNum);
+	Network(int portNum);
 	~Network();
 	void ConnectUDP();
 	void ConnectTCP();
 	bool AcceptTCP();
-	int RecvToClientUDP();
+	//int RecvToClientUDP();
 	int RecvToClientTCP(char* buf, int bufLen);
 };
 

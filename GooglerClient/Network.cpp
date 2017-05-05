@@ -1,13 +1,9 @@
 #include "Network.h"
 
-Network::Network(char* sendBuffer, int buffSize, int portNum, string dstIp)
+Network::Network(int portNum, string dstIp)
 {
 	this->mPort = portNum;
-	this->mSendBuffer = sendBuffer;
 	this->mDstIp = dstIp;
-	this->mBufferSize = buffSize;
-
-
 }
 
 Network::~Network()
@@ -42,6 +38,7 @@ void Network::ConnectUDP()
 	mDstAddress.sin_addr.s_addr = inet_addr(mDstIp.c_str());
 }
 
+/*
 int Network::SendToDstUDP()
 {
 	int error;
@@ -57,6 +54,7 @@ int Network::SendToDstUDP()
 
 	return error;
 }
+*/
 
 void Network::ConnectTCP()
 {
