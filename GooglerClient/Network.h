@@ -28,7 +28,7 @@ public:
 
 	void ConnectUDP();
 	void ConnectTCP();
-	//int SendToDstUDP();
+	int SendToDstUDP(char* buf, int bufLen);
 	int SendToDstTCP(char* buf, int bufLen);
 };
 

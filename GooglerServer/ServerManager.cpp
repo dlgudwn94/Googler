@@ -14,9 +14,9 @@ ServerManager::~ServerManager() {
 }
 
 void ServerManager::FileRecvStart() {
-	//if (mProtocal == UDP)
-		//FileRecvStartUDP();
-	if (mProtocal == TCP)
+	if (mProtocal == UDP)
+		FileRecvStartUDP();
+	else if (mProtocal == TCP)
 		FileRecvStartTCP();
 	else {
 		cout << "ERROR: wrong Protocal" << endl;
@@ -52,6 +52,9 @@ void ServerManager::FileRecvStartTCP() {
 		err = mNetworkIns->RecvToClientTCP(mRecvBuffer, BUFF_SIZE);
 		if (err == -1) {
 			cout << "ERRER: Packet Recv Fail" << endl;
+
+			// required file stream close 
+
 			cout << "ReAccept process.." << endl;
 			mNetworkIns->AcceptTCP();
 		}
@@ -74,7 +77,7 @@ void ServerManager::FileRecvStartTCP() {
 		
 }
 
-/*
+
 void ServerManager::FileRecvStartUDP() {
 
 	mNetworkIns->ConnectUDP();
@@ -97,8 +100,7 @@ void ServerManager::FileRecvStartUDP() {
 		}
 		//time end
 
-		cout << "Waitting for Recive\n";
-		if (mNetworkIns->RecvToClientUDP() == -1) {
+		if (mNetworkIns->RecvToClientUDP(mRecvBuffer, BUFF_SIZE) == -1) {
 			cout << "ERRER: Packet Recv Fail" << endl;
 			exit(1);
 		}
@@ -113,4 +115,3 @@ void ServerManager::FileRecvStartUDP() {
 	}
 
 }
-*/

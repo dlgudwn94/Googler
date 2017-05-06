@@ -44,12 +44,12 @@ void Network::ConnectUDP() {
 	}
 }
 
-/*
-int Network::RecvToClientUDP() {
+
+int Network::RecvToClientUDP(char* buf, int bufLen) {
 	int error;
 	mClientAddrSize = sizeof(mClient_addr);
 
-	error = recvfrom(mServerSocket, mRecvBuffer, mBuffSize, 0,
+	error = recvfrom(mServerSocket, buf, bufLen, 0,
 		(struct sockaddr*)&mClient_addr, &mClientAddrSize);
 
 
@@ -58,7 +58,7 @@ int Network::RecvToClientUDP() {
 
 	return error;
 }
-*/
+
 
 void Network::ConnectTCP() {
 	if (WSAStartup(MAKEWORD(2, 2), &mWsaData) != 0)

@@ -14,24 +14,15 @@ void RecvStart(ServerManager* a) {
 
 int main(void) {
 	
-	//ServerManager* InsSMUDP;
+	ServerManager InsSMUDP(UDP, 8888);
 	ServerManager InsSMTCP(TCP, 9999);
 
-
-	//InsSMUDP = new ServerManager(UDP, 8888);
-	//InsSMTCP = new ServerManager(TCP, 9999);
-
-	InsSMTCP.FileRecvStart();
-
-	/*
-	thread t1(RecvStart, InsSMUDP);
-	thread t2(RecvStart, InsSMTCP);
+	thread t1(RecvStart, &InsSMUDP);
+	thread t2(RecvStart, &InsSMTCP);
 	t1.join();
 	t2.join();
 
-	delete(InsSMTCP);
-	delete(InsSMUDP);
-	*/
+	
 	/*
 	FILE* file;
 

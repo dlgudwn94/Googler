@@ -38,15 +38,15 @@ void Network::ConnectUDP()
 	mDstAddress.sin_addr.s_addr = inet_addr(mDstIp.c_str());
 }
 
-/*
-int Network::SendToDstUDP()
+
+int Network::SendToDstUDP(char* buf, int bufLen)
 {
 	int error;
 
 	//cout << "Transmission data " << mSendBuffer << endl;
 	Sleep(1);
 
-	error = sendto(mClientSocket, mSendBuffer, mBufferSize, 0,
+	error = sendto(mClientSocket, buf, bufLen, 0,
 		(struct sockaddr*)&mDstAddress, sizeof(mDstAddress));
 
 	if (error == -1)
@@ -54,7 +54,7 @@ int Network::SendToDstUDP()
 
 	return error;
 }
-*/
+
 
 void Network::ConnectTCP()
 {

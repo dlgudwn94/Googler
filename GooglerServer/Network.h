@@ -30,7 +30,7 @@ public:
 	void ConnectUDP();
 	void ConnectTCP();
 	bool AcceptTCP();
-	//int RecvToClientUDP();
+	int RecvToClientUDP(char* buf, int bufLen);
 	int RecvToClientTCP(char* buf, int bufLen);
 };
 

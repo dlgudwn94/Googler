@@ -7,7 +7,7 @@
 int main(void)
 {
 
-	ClientManager CMins(TCP, 9999);
+	ClientManager CMins;
 	CMins.FileSendStart();
 	/*
 	ClientManager* CMIns;

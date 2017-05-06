@@ -19,9 +19,10 @@ private:
 	void FileSendStartUDP();
 
 	int mProtocal;
+	string mIp;
 
 public:
-	ClientManager(int protocal, int port);
+	ClientManager();
 	~ClientManager();
 
 	void FileSendStart();
