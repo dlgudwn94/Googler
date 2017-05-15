@@ -52,7 +52,6 @@ void ServerManager::FileRecvStartTCP() {
 		err = mNetworkIns->RecvToClientTCP(mRecvBuffer, BUFF_SIZE);
 		if (err == -1) {
 			cout << "ERRER: Packet Recv Fail" << endl;
-
 			// required file stream close 
 
 			cout << "ReAccept process.." << endl;

@@ -2,12 +2,14 @@
 #include "SearchDirectory.h"
 #include "md5wrapper.h"
 #include <Windows.h>
+#define DATA_FILE_NAME "RD.dat"
 //SearchDirectory sd;
 FileTransfer::FileTransfer(string filename, char* sendBuffer)
 {
 	SearchDirectory sd;
 	this->mFileName = filename;
 	this->isTransferComplete = false;
+	isRe = 0;
 	char getdir[MAX_PATH];
 	src = "";
 	GetCurrentDirectory(MAX_PATH, getdir);
@@ -15,6 +17,14 @@ FileTransfer::FileTransfer(string filename, char* sendBuffer)
 	src.append("\\");
 	sd.MakeDirList(src + mFileName);
 	str_sd = sd.DirList();
+
+	isRetrans();
+	mData.close();
+	if (!isRe)sd.MakeListFile();
+	mData.open(DATA_FILE_NAME, ios::out | ios::in | ios::binary);
+	mData.seekg(0, ios::end);
+	dataEnd = mData.tellg();
+	mData.seekg(0, ios::beg);
 	//serialize
 	mPacket = (Packet*)sendBuffer;
 }
@@ -25,10 +35,13 @@ FileTransfer::~FileTransfer()
 }
 
 int FileTransfer::SetFile() {
+	/*
 	SearchDirectory sd;
 	sd.SetDirList(str_sd);
 	mFileName = sd.GetDir();
-	str_sd = sd.DirList();
+	str_sd = sd.DirList();*/
+
+	if (getData(&wp, &mFileName))return 1;
 	if (mFileName[1] == 'D') {//디렉토리
 		mFileName.erase(0, 2);
 		return 0;
@@ -40,6 +53,84 @@ int FileTransfer::SetFile() {
 	else  {//없음
 		return 1;
 	}
+}
+
+int FileTransfer::isRetrans() {
+	mData.open(DATA_FILE_NAME, ios::out | ios::in | ios::binary);
+	int flg = 1;
+	int next, read;
+	long long fp = 0;
+	char buf[50] = { 0, };
+	mData.seekg(0, ios::end);
+	dataEnd = mData.tellg();
+	mData.seekg(0, ios::beg);
+	if (dataEnd == -1)return 1;
+	if (mData.eof())return 1;
+	do {
+		mData.read(buf, 4);
+		next = *(int*)buf;
+		mData.read(buf, 8);
+		fp = *(long long *)buf;
+		read = next - mData.tellg();
+		mData.read(buf, read);
+		if (flg) {
+			buf[read] = '\0';
+			mFileName.clear();
+			mFileName.append(buf);
+			flg = 0;
+		}
+	} while (fp == -2 && (next < dataEnd));
+	mData.seekg(0, ios::beg);
+	//if (mData.eof())return 1;
+	if (fp == -2)return 1;
+	isRe = 1;
+	wp = fp;
+	return 0;
+}
+
+int FileTransfer::getData(long long *wp, string *name) {
+	char buf[50];
+	int read;
+	int next = 0;
+	long long fp = 0;
+	if (-1 == mData.tellg())return 1;
+	if (dataEnd == mData.tellg())return 1;
+	cout << "dataend:" << dataEnd << "," << mData.tellg() << endl;
+	do {
+		mData.read(buf, 4);
+		next = *(int*)buf;
+		nowData = mData.tellg();
+		mData.read(buf, 8);
+		fp = *(long long *)buf;
+		read = next - mData.tellg();
+		mData.read(buf, read);
+		cout << "info:" << next << fp << endl;
+	} while (fp == -2 && (next < dataEnd));
+	if (fp == -2)return 1;
+	buf[read] = '\0';
+	*wp = fp;
+	name->clear();
+	name->append(buf);
+	return 0;
+}
+
+void FileTransfer::setData() {
+	char tmp[8];
+	char tmp2;
+	*(long long*)tmp = mFileIfstream.tellg();
+	tmp2 = mData.tellp();
+	mData.seekp(nowData);
+	mData.write(tmp, 8);
+	mData.seekg(tmp2);
+}
+void FileTransfer::endData() {
+	char tmp[8];
+	char tmp2;
+	*(long long*)tmp = -2;
+	tmp2 = mData.tellp();
+	mData.seekp(nowData);
+	mData.write(tmp, 8);
+	mData.seekg(tmp2);
 }
 
 int FileTransfer::FileStreamOpen()
@@ -56,7 +147,15 @@ int FileTransfer::FileStreamOpen()
 
 	// first packet
 	mPacket->metaData = -2;
-	strcpy(mPacket->dataBuffer, mFileName.c_str());
+	if (isRe) {
+		*(long long*)mPacket->dataBuffer = wp;
+		mFileIfstream.seekg(wp);
+		isRe = false;
+	}
+	else {
+		*(long long*)mPacket->dataBuffer = 0;
+	}
+	strcpy(&mPacket->dataBuffer[8], mFileName.c_str());
 	
 	return 0;
 }

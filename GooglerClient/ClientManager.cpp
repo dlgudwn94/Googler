@@ -19,7 +19,7 @@ ClientManager::ClientManager()
 ClientManager::~ClientManager()
 {
 	delete(mNetworkIns);
-	delete(mFileIns);
+	//delete(mFileIns);
 }
 
 void ClientManager::FileSendStart() {
@@ -52,6 +52,7 @@ void ClientManager::FileSendStartTCP()
 			mFileIns->ReadyToFolderPacket();
 			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 			count++;
+			mFileIns->endData();
 		}
 		else if (flg == 2) {//파일일경우
 			//file open and name send
@@ -60,6 +61,7 @@ void ClientManager::FileSendStartTCP()
 
 			while (mFileIns->ReadyToPacket() != 0) {//파일전송
 				if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
+				mFileIns->setData();
 				//time
 				count++;
 				if (GetTickCount() - t >= 1000) {
@@ -70,6 +72,7 @@ void ClientManager::FileSendStartTCP()
 				}//time end
 			}
 			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);//해쉬전송
+			mFileIns->endData();
 			cout << "전송" << endl;
 		}
 		else {
@@ -96,6 +99,7 @@ void ClientManager::FileSendStartUDP()
 			mFileIns->ReadyToFolderPacket();
 			if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 			count++;
+			mFileIns->endData();
 		}
 		else if (flg == 2) {//파일일경우
 							//file open and name send
@@ -104,6 +108,7 @@ void ClientManager::FileSendStartUDP()
 
 			while (mFileIns->ReadyToPacket() != 0) {//파일전송
 				if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
+				mFileIns->setData();
 				//time
 				count++;
 				if (GetTickCount() - t >= 1000) {
@@ -114,6 +119,7 @@ void ClientManager::FileSendStartUDP()
 				}//time end
 			}
 			if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);//해쉬전송
+			mFileIns->endData();
 			cout << "전송" << endl;
 		}
 		else {

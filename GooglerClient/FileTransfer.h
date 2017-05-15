@@ -26,15 +26,22 @@ private:
 	string mFileName;
 	string src;
 	ifstream mFileIfstream;
+	fstream mData;
 	Packet *mPacket;
 	string md5_hash;
 	string str_sd;
 	bool isTransferComplete;
-
+	int isRe;
+	int getData(long long *wp, string *name);
+	int isRetrans();
+	void findRetrans();
+	int nowData;
+	int dataEnd;
+	long long wp;
 public:
-	FileTransfer(string fileName, char* sendBuffer);
+	FileTransfer(string filename, char* sendBuffer);
 	~FileTransfer();
-
+	//void init(string fileName, char* sendBuffer);
 	//char *srcFileName;
 	char *tmp;
 	int SetFile();
@@ -45,6 +52,11 @@ public:
 	void getMd5();
 	void makeZip();
 	bool isComplete();
+	int isRet();
+	void Retoff();
+	void setData();
+	void endData();
+	string getname();
 };
 
 #endif // !__FILETRANSFER
