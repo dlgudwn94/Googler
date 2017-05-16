@@ -11,7 +11,7 @@ using namespace std;
 class SearchDirectory {
 public:
 	void MakeDirList(std::string src);
-	void MakeListFile();
+	void MakeListFile(string ip);
 	void SetDirList(std::string dirlist);
 	std::string DirList();
 	std::string GetDir();
@@ -22,7 +22,7 @@ private:
 	std::string DirectoryList;
 };
 
-void SearchDirectory::MakeListFile() {
+void SearchDirectory::MakeListFile(string ip) {
 	ofstream file(DATA_FILE_NAME, ios::out | ios::binary | ios::trunc);
 	string name;
 	string tmpDirectoryList = DirectoryList;
@@ -30,6 +30,7 @@ void SearchDirectory::MakeListFile() {
 	char zero[12] = { 0, };
 	int index;
 	char next[4];
+	file.write(ip.c_str(), 15);
 	while (true) {
 		index = file.tellp();
 		p = tmpDirectoryList.find('?');

@@ -1,17 +1,22 @@
 #include "ClientManager.h"
+#include <fstream>
 
 ClientManager::ClientManager()
 {
 	string Ip;
 	string filename;
-	
-	cout << "Input Dst Ip: ";
-	getline(cin, Ip);
-	cout << "Input open file address: ";
-	getline(cin, filename);
+	if (this->mFileIns->isRet(&Ip, &filename)) {
+		cout << "\nResume found ( ip : "<<Ip<<" , filename : "<<filename<<" )\n\n";
+	}
+	else {
+		cout << "Input Dst Ip: ";
+		getline(cin, Ip);
+		cout << "Input open file address: ";
+		getline(cin, filename);
+	}
 	mIp = Ip;
 	
-	this->mFileIns = new FileTransfer(filename, mSendBuffer);
+	this->mFileIns = new FileTransfer(filename, mSendBuffer,Ip);
 
 	
 }
@@ -20,6 +25,7 @@ ClientManager::~ClientManager()
 {
 	delete(mNetworkIns);
 	//delete(mFileIns);
+	mFileIns->closeData();
 }
 
 void ClientManager::FileSendStart() {

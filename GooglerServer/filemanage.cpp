@@ -99,6 +99,7 @@ int FileManage::RecvPacket() {
 	switch (pk->meta)
 	{
 	case -4://디렉토리명 받음
+		thisFileSize = 0;
 		return GetFolderName();
 		break;
 	case -3://마지막 md5값들어옴
@@ -106,7 +107,8 @@ int FileManage::RecvPacket() {
 		break;
 	case -2://이름
 		cout << "전송 시작" << endl;
-		return SetFileName(&pk->buff[8],*(long long*)pk->buff);
+		thisFileSize=*(long long*)&pk->buff[8];
+		return SetFileName(&pk->buff[16],*(long long*)pk->buff);
 		break;
 	case -1://내용
 		return WriteFile();
@@ -122,3 +124,8 @@ int FileManage::IsOpen() {
 	cout << pk->meta;
 	return FileOpenFlag;
 }
+
+int FileManage::FIleSize() {
+	return thisFileSize;
+}
+

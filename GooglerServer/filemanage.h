@@ -36,12 +36,14 @@ private:
 	int MakeMd5();
 	int Complete();
 	int GetFolderName();
+	long long thisFileSize;
 public:
 	FileManage(char* buffer);
 	~FileManage();
 	int IsOpen(); //파일이 열려있는지 확인(1:열림,0:닫힘)
 	int RecvPacket();
 	int FileClose();
+	int FIleSize();
 };
 
 
