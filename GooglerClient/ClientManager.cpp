@@ -31,14 +31,21 @@ ClientManager::~ClientManager()
 void ClientManager::FileSendStart() {
 
 	// file Size check
+	if (mFileIns->FileSize() < 1024 * 64)
+		mProtocal = UDP;
+	else
+		mProtocal = TCP;
 
-	this->mNetworkIns = new Network(9999, mIp);
+	
 
-	mProtocal = TCP;
-	if (mProtocal == UDP)
+	if (mProtocal == UDP) {
+		this->mNetworkIns = new Network(8888, mIp);
 		FileSendStartUDP();
-	else if (mProtocal == TCP)
+	}
+	else if (mProtocal == TCP) {
+		this->mNetworkIns = new Network(9999, mIp);
 		FileSendStartTCP();
+	}	
 	else {
 		cout << "ERROR: INVALID Protocal" << endl;
 	}

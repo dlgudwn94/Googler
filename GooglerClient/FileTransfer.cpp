@@ -248,3 +248,7 @@ void FileTransfer::closeData() {
 	mData.close();
 	remove(DATA_FILE_NAME);
 }
+
+int FileTransfer::FileSize() {
+	return thisFileSize;
+}

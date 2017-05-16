@@ -50,12 +50,12 @@ public:
 	int ReadyToPacket();
 	int ReadyToFolderPacket();
 	void getMd5();
-	void makeZip();
 	bool isComplete();
 	int isRet(string *ip, string *name);
 	void closeData();
 	void setData();
 	void endData();
+	int FileSize();
 };
 
 #endif // !__FILETRANSFER
