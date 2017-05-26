@@ -1,17 +1,22 @@
 #include "ClientManager.h"
+#include <fstream>
 
 ClientManager::ClientManager()
 {
 	string Ip;
 	string filename;
-	
-	cout << "Input Dst Ip: ";
-	getline(cin, Ip);
-	cout << "Input open file address: ";
-	getline(cin, filename);
+	if (this->mFileIns->isRet(&Ip, &filename)) {
+		cout << "\nResume found ( ip : "<<Ip<<" , filename : "<<filename<<" )\n\n";
+	}
+	else {
+		cout << "Input Dst Ip: ";
+		getline(cin, Ip);
+		cout << "Input open file address: ";
+		getline(cin, filename);
+	}
 	mIp = Ip;
 	
-	this->mFileIns = new FileTransfer(filename, mSendBuffer);
+	this->mFileIns = new FileTransfer(filename, mSendBuffer,Ip);
 
 	
 }
@@ -19,20 +24,28 @@ ClientManager::ClientManager()
 ClientManager::~ClientManager()
 {
 	delete(mNetworkIns);
-	delete(mFileIns);
+	//delete(mFileIns);
+	mFileIns->closeData();
 }
 
 void ClientManager::FileSendStart() {
 
 	// file Size check
+	if (mFileIns->FileSize() < 1024 * 64)
+		mProtocal = UDP;
+	else
+		mProtocal = TCP;
 
-	this->mNetworkIns = new Network(9999, mIp);
+	
 
-	mProtocal = TCP;
-	if (mProtocal == UDP)
+	if (mProtocal == UDP) {
+		this->mNetworkIns = new Network(8888, mIp);
 		FileSendStartUDP();
-	else if (mProtocal == TCP)
+	}
+	else if (mProtocal == TCP) {
+		this->mNetworkIns = new Network(9999, mIp);
 		FileSendStartTCP();
+	}	
 	else {
 		cout << "ERROR: INVALID Protocal" << endl;
 	}
@@ -52,6 +65,7 @@ void ClientManager::FileSendStartTCP()
 			mFileIns->ReadyToFolderPacket();
 			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 			count++;
+			mFileIns->endData();
 		}
 		else if (flg == 2) {//파일일경우
 			//file open and name send
@@ -60,6 +74,7 @@ void ClientManager::FileSendStartTCP()
 
 			while (mFileIns->ReadyToPacket() != 0) {//파일전송
 				if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
+				mFileIns->setData();
 				//time
 				count++;
 				if (GetTickCount() - t >= 1000) {
@@ -70,6 +85,7 @@ void ClientManager::FileSendStartTCP()
 				}//time end
 			}
 			if (mNetworkIns->SendToDstTCP(mSendBuffer, BUFF_SIZE) == -1) exit(1);//해쉬전송
+			mFileIns->endData();
 			cout << "전송" << endl;
 		}
 		else {
@@ -96,6 +112,7 @@ void ClientManager::FileSendStartUDP()
 			mFileIns->ReadyToFolderPacket();
 			if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
 			count++;
+			mFileIns->endData();
 		}
 		else if (flg == 2) {//파일일경우
 							//file open and name send
@@ -104,6 +121,7 @@ void ClientManager::FileSendStartUDP()
 
 			while (mFileIns->ReadyToPacket() != 0) {//파일전송
 				if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);
+				mFileIns->setData();
 				//time
 				count++;
 				if (GetTickCount() - t >= 1000) {
@@ -114,6 +132,7 @@ void ClientManager::FileSendStartUDP()
 				}//time end
 			}
 			if (mNetworkIns->SendToDstUDP(mSendBuffer, BUFF_SIZE) == -1) exit(1);//해쉬전송
+			mFileIns->endData();
 			cout << "전송" << endl;
 		}
 		else {

@@ -12,13 +12,17 @@ FileManage::~FileManage() {
 	}
 }
 
-int FileManage::SetFileName(char *name) {
+int FileManage::SetFileName(char *name,long long wp) {
+	if (File)File.close();
 	this->FileName = name;
 	if (FileName.size() > 0) {
 		cout << "Recive File Name:" << name <<"<-"<< endl;
-		File.open(name, ios::out|ios::binary);
+		File.open(name,ios::in|ios::out|ios::binary);
+		if(File.is_open()==false)File.open(name, ios::out | ios::binary);
 		if (File) {
 			FileOpenFlag = 0;//파일 열림
+			cout << "again:" << wp << endl;
+			File.seekp(wp);
 		}
 		else {
 			cout << "ERRER Recive Wrong File Name :" << name << endl;
@@ -95,6 +99,7 @@ int FileManage::RecvPacket() {
 	switch (pk->meta)
 	{
 	case -4://디렉토리명 받음
+		thisFileSize = 0;
 		return GetFolderName();
 		break;
 	case -3://마지막 md5값들어옴
@@ -102,7 +107,8 @@ int FileManage::RecvPacket() {
 		break;
 	case -2://이름
 		cout << "전송 시작" << endl;
-		return SetFileName(pk->buff);
+		thisFileSize=*(long long*)&pk->buff[8];
+		return SetFileName(&pk->buff[16],*(long long*)pk->buff);
 		break;
 	case -1://내용
 		return WriteFile();
@@ -118,3 +124,8 @@ int FileManage::IsOpen() {
 	cout << pk->meta;
 	return FileOpenFlag;
 }
+
+int FileManage::FIleSize() {
+	return thisFileSize;
+}
+

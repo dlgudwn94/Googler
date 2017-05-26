@@ -4,12 +4,14 @@
 #include <io.h>
 #include <conio.h>
 #include <string>
-
+#include <fstream>
+#define DATA_FILE_NAME "RD.dat"
 using namespace std;
 
 class SearchDirectory {
 public:
 	void MakeDirList(std::string src);
+	void MakeListFile(string ip);
 	void SetDirList(std::string dirlist);
 	std::string DirList();
 	std::string GetDir();
@@ -19,6 +21,32 @@ private:
 	std::string root;
 	std::string DirectoryList;
 };
+
+void SearchDirectory::MakeListFile(string ip) {
+	ofstream file(DATA_FILE_NAME, ios::out | ios::binary | ios::trunc);
+	string name;
+	string tmpDirectoryList = DirectoryList;
+	int p, end;
+	char zero[12] = { 0, };
+	int index;
+	char next[4];
+	file.write(ip.c_str(), 15);
+	while (true) {
+		index = file.tellp();
+		p = tmpDirectoryList.find('?');
+		end = tmpDirectoryList.find('?', p + 1);
+		name = tmpDirectoryList.substr(p, end);
+		if (end == p + 1)break;
+		file.write(zero, 12);
+		file.write(name.c_str(), name.length());
+		*(int*)next = file.tellp();
+		file.seekp(index);
+		file.write(next, 4);
+		file.seekp(*(int*)next);
+		tmpDirectoryList = tmpDirectoryList.substr(end, tmpDirectoryList.length());
+	}
+	file.close();
+}
 
 void SearchDirectory::MakeDirList(std::string src) {
 	int flg = CheckIfDir(src);
