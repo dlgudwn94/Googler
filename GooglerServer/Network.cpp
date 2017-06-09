@@ -46,15 +46,19 @@ void Network::ConnectUDP() {
 
 
 int Network::RecvToClientUDP(char* buf, int bufLen) {
-	int error;
+	int error, flag;
 	mClientAddrSize = sizeof(mClient_addr);
 
 	error = recvfrom(mServerSocket, buf, bufLen, 0,
 		(struct sockaddr*)&mClient_addr, &mClientAddrSize);
 
-
 	if (error == -1)
 		cout << "ERROR: recvfrom Fail" << endl;
+
+	flag = sendto(mServerSocket, "1", 1, 0,
+		(SOCKADDR*)&mClient_addr, mClientAddrSize);
+	if (flag == -1)
+		cout << "ERROR: flag Fail" << endl;
 
 	return error;
 }

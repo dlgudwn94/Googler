@@ -41,16 +41,22 @@ void Network::ConnectUDP()
 
 int Network::SendToDstUDP(char* buf, int bufLen)
 {
-	int error;
+	int error, flag;
+	
 
 	//cout << "Transmission data " << mSendBuffer << endl;
-	Sleep(1);
 
 	error = sendto(mClientSocket, buf, bufLen, 0,
 		(struct sockaddr*)&mDstAddress, sizeof(mDstAddress));
 
 	if (error == -1)
 		cout << "ERROR: Sendto fail" << endl;
+
+	int addrlen = sizeof(mPeeraddr);
+	flag = recvfrom(mClientSocket, mTrash, sizeof(mTrash), 0,
+		(SOCKADDR*)&mPeeraddr, &addrlen);
+	if (flag == -1)
+		cout << "ERROR: flag fail" << endl;
 
 	return error;
 }

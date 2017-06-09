@@ -20,7 +20,10 @@ private:
 	SOCKET mClientSocket;
 
 	struct sockaddr_in mDstAddress;
+	struct sockaddr_in mPeeraddr;
 	int mPort;
+
+	char mTrash[10];
 
 public:
 	Network(int portNum, string dstIp);
