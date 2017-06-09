@@ -9,6 +9,7 @@
 
 #include <WinSock2.h>
 #include <iostream>
+#include "IpCheck.h"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ private:
 	struct sockaddr_in mClient_addr;
 	int mClientAddrSize;
 	int mAddressSize;
+
+	IpCheck mIpCheck;
 
 public:
 	Network(int portNum);

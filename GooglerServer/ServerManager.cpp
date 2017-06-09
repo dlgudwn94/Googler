@@ -30,7 +30,9 @@ void ServerManager::FileRecvStartTCP() {
 
 	cout << "TCP Recv Stand by" << endl;
 
-	mNetworkIns->AcceptTCP();
+	while (!mNetworkIns->AcceptTCP()) {
+		cout << "Accept Process ... " << endl;
+	}
 		
 	//time
 	DWORD t = GetTickCount();
@@ -55,12 +57,16 @@ void ServerManager::FileRecvStartTCP() {
 			// required file stream close 
 
 			cout << "ReAccept process.." << endl;
-			mNetworkIns->AcceptTCP();
+			while (!mNetworkIns->AcceptTCP()) {
+				cout << "Accept Process ... " << endl;
+			}
 		}
 
 		if (err == 0) {
 			cout << "ReAccept process.." << endl;
-			mNetworkIns->AcceptTCP();
+			while (!mNetworkIns->AcceptTCP()) {
+				cout << "Accept Process ... " << endl;
+			}
 		}
 		else {
 			count++;

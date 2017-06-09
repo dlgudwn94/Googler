@@ -2,7 +2,7 @@
 
 #define LISTENQUEUESIZE 5
 
-Network::Network(int portNum) {
+Network::Network(int portNum) : mIpCheck("IPCHECK.txt") {
 	this->mPort = portNum;
 	mClientAddrSize = 0;
 	mAddressSize = 0;
@@ -112,6 +112,9 @@ bool Network::AcceptTCP() {
 		return false;
 	}
 	cout << "Á¢¼Ó IP : " << inet_ntoa(mClient_addr.sin_addr) << endl;
+	if (mIpCheck.Check(inet_ntoa(mClient_addr.sin_addr))) {
+		cout << "IP Check clear" << endl;
+	}
 	return true;
 }
 
