@@ -9,6 +9,7 @@
 
 # Compiled Dynamic libraries
 *.so
+*.lib
 
 # Fortran module files
 *.mod
