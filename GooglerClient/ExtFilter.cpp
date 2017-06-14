@@ -19,7 +19,7 @@ int extFilter::init(){
 	list=NULL;
 	file.open(EXTFILTER_FILE,ios::in);
 	if(!file.is_open())return 1;
-	char buf[16];
+	char buf[16] = { 0, };
 	last=0;
 	node *np;
 	flg=1;
@@ -28,14 +28,16 @@ int extFilter::init(){
 	np->next=NULL;
 	while(!file.eof()){
 		file.getline(buf,16);
-		if(last==50){
-			last=0;
-			np->next=new node;
-			np=np->next;
-			np->next=NULL;
+		if (strcmp(buf, "\0") != 0) {
+			if (last == 50) {
+				last = 0;
+				np->next = new node;
+				np = np->next;
+				np->next = NULL;
+			}
+			np->ary[last].append(buf);
+			last++;
 		}
-		np->ary[last].append(buf);
-		last++;
 	}
 	file.close();
 	return 0;
@@ -43,13 +45,21 @@ int extFilter::init(){
 int extFilter::checkName(string name){
 	if(flg==0)return 0; //초기화 되지 않음
 	int pointer=name.find_last_of('.');
-	if (pointer>=0) name=name.substr(pointer,name.length());
+	if (pointer>=0) name=name.substr(pointer+1,name.length());
 	node *np;
 	int i;
 	np=list;
 	do{
-		for(i=0;i<50;i++){
-			if(name.compare(np->ary[i])==0)return 1;
+		if (np->next != NULL) {
+			for (i = 0; i < 50; i++) {
+				if (name.compare(np->ary[i]) == 0)return 1;
+			}
+		}
+		else {
+			for (i = 0; i < last; i++) {
+				if (name.compare(np->ary[i]) == 0)return 1;
+			}
+
 		}
 		np=np->next;
 	}while(np!=NULL);

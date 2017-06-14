@@ -5,15 +5,35 @@ ClientManager::ClientManager()
 {
 	string Ip;
 	string filename;
-	if (this->mFileIns->isRet(&Ip, &filename)) {
-		cout << "\nResume found ( ip : "<<Ip<<" , filename : "<<filename<<" )\n\n";
+	int menu;
+	while (1) {
+		cout << "~File Send Client~" << endl;
+		cout << "1.Send file" << endl;
+		cout << "2.Resume(if fail to send before)" << endl;
+		cout << "3.Set filename-extension filter" << endl;
+		cin >> menu;
+		cin.get();
+		if (menu == 1) {
+			cout << "Input Dst Ip: ";
+			getline(cin, Ip);
+			cout << "Input open file address: ";
+			getline(cin, filename);
+			break;
+		}
+		if (menu == 2) {
+			if (this->mFileIns->isRet(&Ip, &filename)) {
+				cout << "\nResume found ( ip : " << Ip << " , filename : " << filename << " )\n\n";
+				break;
+			}
+			else {
+				cout << "\nNo file to Resume!\n\n";
+			}
+		}
+		if (menu == 3) {
+			this->mFileIns->FilterOption();
+		}
 	}
-	else {
-		cout << "Input Dst Ip: ";
-		getline(cin, Ip);
-		cout << "Input open file address: ";
-		getline(cin, filename);
-	}
+	
 	mIp = Ip;
 	
 	this->mFileIns = new FileTransfer(filename, mSendBuffer,Ip);
@@ -29,6 +49,17 @@ ClientManager::~ClientManager()
 }
 
 void ClientManager::FileSendStart() {
+
+
+
+
+
+
+
+
+
+
+
 
 	// file Size check
 	if (mFileIns->FileSize() < 1024 * 64)

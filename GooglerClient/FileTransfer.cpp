@@ -38,8 +38,11 @@ int FileTransfer::SetFile() {
 	sd.SetDirList(str_sd);
 	mFileName = sd.GetDir();
 	str_sd = sd.DirList();*/
-
-	if (getData(&wp, &mFileName))return 1;
+	int tmp;
+	do {
+		tmp = getData(&wp, &mFileName);
+	} while (extfilter.checkName(mFileName)==1 && tmp == 0);
+	if (tmp)return 1;
 	if (mFileName[1] == 'D') {//디렉토리
 		mFileName.erase(0, 2);
 		return 0;
@@ -251,4 +254,25 @@ void FileTransfer::closeData() {
 
 int FileTransfer::FileSize() {
 	return thisFileSize;
+}
+
+void FileTransfer::FilterOption() {
+	char buf[51];
+	string tmp;
+	int place;
+	cout << "Add filename-extension to block upload (ex jpg)" << endl;
+	while (1) {
+		cout << "filename-extension(empty to exit):";
+		cin.getline(buf, 50);
+		if (strcmp(buf, "\0") == 0)return;
+		tmp.clear();
+		tmp.append(buf);
+		place = tmp.find('.');
+		while (place >= 0) {//점이 입력으로 들어오면 제거
+			tmp.erase(place, 1);
+			place = tmp.find('.');
+		}
+		extFilter ef;
+		ef.addFilter(tmp);
+	}
 }

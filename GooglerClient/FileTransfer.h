@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "ExtFilter.h"
 
 #define BUFF_SIZE (1024 * 32)
 #define DATA_SIZE (BUFF_SIZE - 4)
@@ -30,6 +31,7 @@ private:
 	Packet *mPacket;
 	string md5_hash;
 	string str_sd;
+	extFilter extfilter;
 	bool isTransferComplete;
 	int isRe;
 	int getData(long long *wp, string *name);
@@ -43,6 +45,7 @@ public:
 	~FileTransfer();
 	//void init(string fileName, char* sendBuffer);
 	//char *srcFileName;
+	void FilterOption();
 	char *tmp;
 	int SetFile();
 	int FileStreamOpen();
