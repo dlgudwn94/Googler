@@ -3,6 +3,7 @@
 
 FileManage::FileManage(char* buffer) {
 	FileOpenFlag = 1;
+	ignore = 0;
 	this->mRecvBuffer = buffer;
 }
 
@@ -28,7 +29,6 @@ int FileManage::SetFileName(char *name,long long wp) {
 			cout << "ERRER Recive Wrong File Name :" << name << endl;
 		}
 	}
-	this->mLogIns = new Log(FileName);
 	return FileOpenFlag;
 }
 
@@ -94,6 +94,7 @@ int FileManage::GetFolderName() {
 int FileManage::RecvPacket() {
 	pk = (packet*)mRecvBuffer;
 
+	string tmpstr;
 	if(DEBUG)
 		cout << "meta:" << pk->meta << ",buf:" << pk->buff << "<-\n";
 
@@ -104,17 +105,32 @@ int FileManage::RecvPacket() {
 		return GetFolderName();
 		break;
 	case -3://마지막 md5값들어옴
+		if (ignore) {
+			ignore = 0;
+			return 0;
+		}
 		return Complete();
 		break;
 	case -2://이름
+		tmpstr.clear();
+		tmpstr.append(&pk->buff[16]);
+		this->mLogIns = new Log(&pk->buff[16]);
+		if (efilter.checkName(tmpstr)) {
+			cout << "받기가 제한된 확장자: " << tmpstr << endl;
+			this->FileName = &pk->buff[16];
+			ignore = 1;
+		}
 		cout << "전송 시작" << endl;
 		thisFileSize=*(long long*)&pk->buff[8];
+		if (ignore)return 0;
 		return SetFileName(&pk->buff[16],*(long long*)pk->buff);
 		break;
 	case -1://내용
+		if (ignore)return 0;
 		return WriteFile();
 		break;
 	default://0~buffsize 내용끝
+		if (ignore)return 0;
 		cout << "전송 완료 -> 대기" << endl;
 		mLogIns->writeLog();
 		return FileEnd();

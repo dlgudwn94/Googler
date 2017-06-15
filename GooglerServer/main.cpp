@@ -9,11 +9,36 @@ using namespace std;
 void RecvStart(ServerManager* a) {
 	a->FileRecvStart();
 }
+void AddFilter() {
+	fstream fs;
+	fs.open("IPCheck.txt", ios::_Noreplace | ios::_Nocreate | ios::in);
+	if (!fs.is_open()) {
+		fs.open("IPCheck.txt", ios::trunc | ios::out);
+		fs.close();
+	}
+	extFilter ef;
+	string st;
+	char tmp[51];
+	cout << "Write filename-extension filter" << endl;
+	cout << "empty to start Server" << endl;
+	cout << "ex) jpg" << endl;
+	while (1) {
+		cout << "Filter: ";
+		cin.getline(tmp, 50);
+		if (strcmp(tmp, "\0") == 0)break;
+		st.clear();
+		st.append(tmp);
+		ef.addFilter(st);
+		ef.showFilter();
+	}
+}
 
 #define BUFSIZE (1024*32)
 
 int main(void) {
-	
+
+	AddFilter();
+
 	ServerManager InsSMUDP(UDP, 8888);
 	ServerManager InsSMTCP(TCP, 9999);
 

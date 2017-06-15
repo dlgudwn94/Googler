@@ -9,6 +9,7 @@
 #include <direct.h>
 #include "md5wrapper.h"
 #include "ServerLog.h"
+#include "ExtFilter.h"
 
 #define BUFF_SIZE (1024 * 32)
 #define STRUCT_SIZE (BUFF_SIZE - 4)
@@ -39,6 +40,8 @@ private:
 	int GetFolderName();
 	long long thisFileSize;
 	Log* mLogIns;
+	int ignore;
+	extFilter efilter;
 public:
 	FileManage(char* buffer);
 	~FileManage();
@@ -46,6 +49,7 @@ public:
 	int RecvPacket();
 	int FileClose();
 	int FIleSize();
+	void addExt(string ext) { efilter.addFilter(ext); }
 };
 
 

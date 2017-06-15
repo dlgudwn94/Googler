@@ -6,37 +6,55 @@ ClientManager::ClientManager()
 	string Ip;
 	string filename;
 	int menu;
-	while (1) {
-		cout << "~File Send Client~" << endl;
-		cout << "1.Send file" << endl;
-		cout << "2.Resume(if fail to send before)" << endl;
-		cout << "3.Set filename-extension filter" << endl;
+	int waitTime = 0;
+
+	if (this->mFileIns->isRet(&Ip, &filename)) {
+		cout << "\nResume found ( ip : " << Ip << " , filename : " << filename << " )\n\n";
+		cout << "continue?" << endl;
+		cout << "1.yes" << endl;
+		cout << "2.no (exit)" << endl;
 		cin >> menu;
-		cin.get();
-		if (menu == 1) {
-			cout << "Input Dst Ip: ";
-			getline(cin, Ip);
-			cout << "Input open file address: ";
-			getline(cin, filename);
-			break;
+		if (menu != 1) {
+			mFileIns->closeData();
+			exit(0);
 		}
-		if (menu == 2) {
-			if (this->mFileIns->isRet(&Ip, &filename)) {
-				cout << "\nResume found ( ip : " << Ip << " , filename : " << filename << " )\n\n";
+
+	}
+	else {
+		while (1) {
+			cout << "~File Send Client~" << endl;
+			cout << "1.Send file" << endl;
+			cout << "2.Set filename-extension filter" << endl;
+			cout << "3.Set timer to delay sending" << endl;
+			cin >> menu;
+			cin.get();
+			if (menu == 1) {
+				cout << "Input Dst Ip: ";
+				getline(cin, Ip);
+				cout << "Input open file address: ";
+				getline(cin, filename);
 				break;
 			}
-			else {
-				cout << "\nNo file to Resume!\n\n";
+			if (menu == 2) {
+				this->mFileIns->FilterOption();
+			}
+			if (menu == 3) {
+				cout << "Wait time before send" << endl;
+				cout << "(Second):";
+				cin >> waitTime;
 			}
 		}
-		if (menu == 3) {
-			this->mFileIns->FilterOption();
-		}
 	}
-	
+
+
 	mIp = Ip;
-	
-	this->mFileIns = new FileTransfer(filename, mSendBuffer,Ip);
+	if (waitTime > 0) {
+		cout << "Wait for " << waitTime << " Seconds..." << endl;
+		Wait wt;
+		wt.run(waitTime);
+	}
+
+	this->mFileIns = new FileTransfer(filename, mSendBuffer, Ip);
 	this->mLogIns = new Log(filename, Ip);
 	
 }
