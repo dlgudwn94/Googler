@@ -37,7 +37,7 @@ ClientManager::ClientManager()
 	mIp = Ip;
 	
 	this->mFileIns = new FileTransfer(filename, mSendBuffer,Ip);
-
+	this->mLogIns = new Log(filename, Ip);
 	
 }
 
@@ -123,6 +123,7 @@ void ClientManager::FileSendStartTCP()
 			cout << " transmission time : " << (count * DATA_SIZE)
 				<< " byte/sec" << endl;
 			cout << "傈价场" << endl;
+			mLogIns->writeLog();
 			break;
 		}
 	}
@@ -170,6 +171,7 @@ void ClientManager::FileSendStartUDP()
 			cout << " transmission time : " << (count * DATA_SIZE)
 				<< " byte/sec" << endl;
 			cout << "傈价场" << endl;
+			mLogIns->writeLog();
 			break;
 		}
 	}

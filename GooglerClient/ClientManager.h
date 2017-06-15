@@ -3,6 +3,7 @@
 
 #include "Network.h"
 #include "FileTransfer.h"
+#include "ClientLog.h"
 
 #define UDP 0
 #define TCP 1
@@ -12,6 +13,7 @@ class ClientManager
 private:
 	Network* mNetworkIns;
 	FileTransfer* mFileIns;
+	Log* mLogIns;
 	
 	char mSendBuffer[BUFF_SIZE];
 
