@@ -1,4 +1,5 @@
 #include "ClientManager.h"
+#include "Wait.h"
 #include <fstream>
 
 ClientManager::ClientManager()
