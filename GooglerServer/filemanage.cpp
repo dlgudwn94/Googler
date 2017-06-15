@@ -28,6 +28,7 @@ int FileManage::SetFileName(char *name,long long wp) {
 			cout << "ERRER Recive Wrong File Name :" << name << endl;
 		}
 	}
+	this->mLogIns = new Log(FileName);
 	return FileOpenFlag;
 }
 
@@ -115,6 +116,7 @@ int FileManage::RecvPacket() {
 		break;
 	default://0~buffsize 내용끝
 		cout << "전송 완료 -> 대기" << endl;
+		mLogIns->writeLog();
 		return FileEnd();
 		break;
 	}

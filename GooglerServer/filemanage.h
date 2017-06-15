@@ -8,6 +8,7 @@
 #include <string>
 #include <direct.h>
 #include "md5wrapper.h"
+#include "ServerLog.h"
 
 #define BUFF_SIZE (1024 * 32)
 #define STRUCT_SIZE (BUFF_SIZE - 4)
@@ -37,6 +38,7 @@ private:
 	int Complete();
 	int GetFolderName();
 	long long thisFileSize;
+	Log* mLogIns;
 public:
 	FileManage(char* buffer);
 	~FileManage();
